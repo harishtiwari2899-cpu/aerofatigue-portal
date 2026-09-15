@@ -1317,8 +1317,12 @@
 
       // --- FIREBASE AUTHENTICATION HANDLERS ---
       const handleGoogleSignIn = async () => {
+        if (!firebase.apps || firebase.apps.length === 0 || !cloudConfig || !cloudConfig.apiKey) {
+          setAuthError("Firebase is not connected yet. Please click 'Configure Firebase Keys Now' below to paste your Firebase config snippet.");
+          return;
+        }
         if (!firebase.auth) {
-          setAuthError("Firebase Auth is not loaded.");
+          setAuthError("Firebase Auth SDK is not available.");
           return;
         }
         setAuthLoading(true);
@@ -1340,6 +1344,10 @@
 
       const handleEmailSignIn = async (e) => {
         e.preventDefault();
+        if (!firebase.apps || firebase.apps.length === 0 || !cloudConfig || !cloudConfig.apiKey) {
+          setAuthError("Firebase is not connected yet. Please click 'Configure Firebase Keys Now' below to paste your Firebase config snippet.");
+          return;
+        }
         if (!authEmail.trim() || !authPassword.trim()) {
           setAuthError("Please enter your email and password.");
           return;
@@ -1360,6 +1368,10 @@
 
       const handleEmailSignUp = async (e) => {
         e.preventDefault();
+        if (!firebase.apps || firebase.apps.length === 0 || !cloudConfig || !cloudConfig.apiKey) {
+          setAuthError("Firebase is not connected yet. Please click 'Configure Firebase Keys Now' below to paste your Firebase config snippet.");
+          return;
+        }
         if (!authEmail.trim() || !authPassword.trim()) {
           setAuthError("Email and password are required.");
           return;
@@ -1412,7 +1424,7 @@
 
       const handleSignOut = async () => {
         try {
-          if (firebase.auth) {
+          if (firebase.apps && firebase.apps.length > 0 && firebase.auth) {
             await firebase.auth().signOut();
           }
           setAuthUser(null);
@@ -4200,6 +4212,33 @@
                     </h3>
                     <button onClick={() => setShowAuthModal(false)} className="text-slate-400 hover:text-white text-lg">✕</button>
                   </div>
+
+                  {/* Firebase Config Notice if unconfigured */}
+                  {(!cloudConfig || !cloudConfig.apiKey || cloudStatus !== 'connected') && (
+                    <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/50 space-y-2 text-xs font-sans">
+                      <div className="font-bold font-mono text-amber-300 flex items-center justify-between">
+                        <span className="flex items-center gap-1.5">
+                          <span>⚡</span> Firebase Configuration Required
+                        </span>
+                        <span className="text-[10px] text-amber-400 font-normal">aerofatigue-portal</span>
+                      </div>
+                      <p className="text-slate-300 text-[11px] leading-relaxed">
+                        To enable Google Sign-In and Email Authentication, please paste your Web App configuration snippet for project <strong className="text-cyan-300 font-mono">aerofatigue-portal</strong>.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowAuthModal(false);
+                          setCloudInputCode(cloudConfig ? JSON.stringify(cloudConfig, null, 2) : '');
+                          setShowCloudModal(true);
+                        }}
+                        className="btn-cyber w-full py-2 text-xs font-mono font-bold flex items-center justify-center gap-2"
+                      >
+                        <span>⚙️</span>
+                        <span>Paste &amp; Connect Firebase Keys Now →</span>
+                      </button>
+                    </div>
+                  )}
 
                   {/* Google Sign In Button */}
                   <div className="space-y-3">
