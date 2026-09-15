@@ -1,6 +1,6 @@
 [build]
-  command = "echo 'Static build ready'"
-  publish = "."
+  command = "mkdir -p dist && cp index.html dist/ && cp standalone.html dist/ 2>/dev/null || true && cp -r assets dist/ 2>/dev/null || true && cp _redirects dist/ 2>/dev/null || true"
+  publish = "dist"
 
 [[redirects]]
   from = "/*"
