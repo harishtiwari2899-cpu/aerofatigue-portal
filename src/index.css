@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #060D1A;
+    color: #F1F5F9;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Custom scrollbar for cockpit interfaces */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0B192C;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #234475;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #325D9B;
+  }
+}
+
+@layer components {
+  .cockpit-panel {
+    @apply bg-aviation-navy/70 backdrop-blur-md border border-aviation-border rounded-xl shadow-cockpit-card;
+  }
+
+  .cockpit-panel-subtle {
+    @apply bg-aviation-dark/80 backdrop-blur-sm border border-aviation-border/60 rounded-lg;
+  }
+
+  .cockpit-input {
+    @apply bg-aviation-darkest/90 border border-aviation-border text-slate-100 rounded-lg px-3.5 py-2 text-sm focus:outline-none focus:border-aviation-accent focus:ring-1 focus:ring-aviation-accent transition-all duration-150 placeholder:text-slate-500;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-aviation-accent hover:bg-aviation-accentHover text-aviation-darkest font-semibold text-sm transition-all duration-150 shadow-glow-cyan active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-aviation-card hover:bg-aviation-cardHover text-slate-200 border border-aviation-border hover:border-aviation-borderLight text-sm font-medium transition-all duration-150 active:scale-[0.98];
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-risk-critical/20 hover:bg-risk-critical/30 text-risk-critical border border-risk-criticalBorder text-sm font-semibold transition-all duration-150 shadow-glow-red active:scale-[0.98];
+  }
+
+  .badge-low {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-risk-lowBg text-risk-low border border-risk-lowBorder shadow-glow-green/20;
+  }
+
+  .badge-mod {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-risk-modBg text-risk-mod border border-risk-modBorder shadow-glow-amber/20;
+  }
+
+  .badge-high {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-risk-highBg text-risk-high border border-risk-highBorder;
+  }
+
+  .badge-critical {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-risk-criticalBg text-risk-critical border border-risk-criticalBorder shadow-glow-red/30 animate-pulse;
+  }
+}
+
+/* Radar pulse animation */
+@keyframes radar-sweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.radar-sweep {
+  animation: radar-sweep 4s linear infinite;
+}
