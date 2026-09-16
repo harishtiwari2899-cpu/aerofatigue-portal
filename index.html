@@ -552,7 +552,35 @@
     function fileToDataUrl(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            try {
+              const canvas = document.createElement('canvas');
+              const maxDim = 320;
+              let w = img.width;
+              let h = img.height;
+              if (w > maxDim || h > maxDim) {
+                if (w > h) {
+                  h = Math.round((h * maxDim) / w);
+                  w = maxDim;
+                } else {
+                  w = Math.round((w * maxDim) / h);
+                  h = maxDim;
+                }
+              }
+              canvas.width = w;
+              canvas.height = h;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, w, h);
+              resolve(canvas.toDataURL('image/jpeg', 0.82));
+            } catch (canvasErr) {
+              resolve(e.target.result);
+            }
+          };
+          img.onerror = () => resolve(e.target.result);
+          img.src = e.target.result;
+        };
         reader.onerror = (err) => reject(err);
         reader.readAsDataURL(file);
       });
@@ -851,11 +879,59 @@
     function CrewFatigueApp() {
       const [currentView, setCurrentView] = useState('home'); // 'home', 'app', 'admin'
 
-      const [personnelList, setPersonnelList] = useState(INITIAL_PERSONNEL);
-      const [fatigueLogs, setFatigueLogs] = useState(INITIAL_LOGS);
+      // Persistent Local State with Instant Fallback
+      const [personnelList, setPersonnelList] = useState(() => {
+        try {
+          const saved = localStorage.getItem("aerofatigue_personnel_list_v5");
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          }
+        } catch (e) {}
+        return INITIAL_PERSONNEL;
+      });
+
+      const [fatigueLogs, setFatigueLogs] = useState(() => {
+        try {
+          const saved = localStorage.getItem("aerofatigue_history_logs_v5");
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          }
+        } catch (e) {}
+        return INITIAL_LOGS;
+      });
 
       // Admin Credentials & Authentication State
-      const [adminCreds, setAdminCreds] = useState({ id: DEFAULT_ADMIN_ID, password: DEFAULT_ADMIN_PASS });
+      const [adminCreds, setAdminCreds] = useState(() => {
+        try {
+          const saved = localStorage.getItem("aerofatigue_admin_creds_v5");
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            if (parsed && parsed.id && parsed.password) return parsed;
+          }
+        } catch (e) {}
+        return { id: DEFAULT_ADMIN_ID, password: DEFAULT_ADMIN_PASS };
+      });
+
+      // Live local caching for instant loading across reloads / offline
+      useEffect(() => {
+        try {
+          localStorage.setItem("aerofatigue_personnel_list_v5", JSON.stringify(personnelList));
+        } catch (e) {}
+      }, [personnelList]);
+
+      useEffect(() => {
+        try {
+          localStorage.setItem("aerofatigue_history_logs_v5", JSON.stringify(fatigueLogs));
+        } catch (e) {}
+      }, [fatigueLogs]);
+
+      useEffect(() => {
+        try {
+          localStorage.setItem("aerofatigue_admin_creds_v5", JSON.stringify(adminCreds));
+        } catch (e) {}
+      }, [adminCreds]);
 
       const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 
@@ -1011,6 +1087,13 @@
                   list.push({ id: doc.id, ...doc.data() });
                 });
                 setPersonnelList(list);
+              } else {
+                // Auto-seed cloud if database collection is empty
+                const batch = dbInstance.batch();
+                personnelList.forEach(p => {
+                  batch.set(dbInstance.collection('aerofatigue_personnel').doc(p.id), p);
+                });
+                batch.commit().catch(e => console.error("Initial auto-seed personnel error:", e));
               }
               setCloudStatus('connected');
             },
@@ -1031,6 +1114,13 @@
                 });
                 logs.sort((a, b) => new Date(`${b.recordDate}T${b.recordTime || '00:00'}`) - new Date(`${a.recordDate}T${a.recordTime || '00:00'}`));
                 setFatigueLogs(logs);
+              } else {
+                // Auto-seed cloud logs if database collection is empty
+                const batch = dbInstance.batch();
+                fatigueLogs.forEach(l => {
+                  batch.set(dbInstance.collection('aerofatigue_logs').doc(l.id), l);
+                });
+                batch.commit().catch(e => console.error("Initial auto-seed logs error:", e));
               }
             },
             (err) => {
@@ -1046,6 +1136,12 @@
                 if (data && data.password) {
                   setAdminCreds({ id: data.id || DEFAULT_ADMIN_ID, password: data.password });
                 }
+              } else {
+                dbInstance.collection('aerofatigue_config').doc('admin').set({
+                  id: adminCreds.id || DEFAULT_ADMIN_ID,
+                  password: adminCreds.password || DEFAULT_ADMIN_PASS,
+                  updatedAt: new Date().toISOString()
+                }).catch(e => console.error("Initial auto-seed admin error:", e));
               }
             },
             (err) => {
@@ -1073,17 +1169,6 @@
           if (unsubAuth) unsubAuth();
         };
       }, [cloudConfig]);
-
-      // Clean legacy cache on load
-      useEffect(() => {
-        try {
-          localStorage.removeItem("crew_fatigue_personnel_list_v4");
-          localStorage.removeItem("crew_fatigue_history_logs_v4");
-          localStorage.removeItem("crew_fatigue_active_person_id_v4");
-          localStorage.removeItem("aerofatigue_admin_credentials_v1");
-          sessionStorage.removeItem("aerofatigue_admin_logged_in");
-        } catch (e) {}
-      }, []);
 
       const activePerson = useMemo(() => {
         if (!selectedPersonId) return null;
