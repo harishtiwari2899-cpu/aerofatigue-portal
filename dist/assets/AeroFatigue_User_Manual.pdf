@@ -1,0 +1,855 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 4 0 R 5 0 R 6 0 R] /Count 4 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 7 0 R /F2 8 0 R >> >> /Contents 9 0 R >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 7 0 R /F2 8 0 R >> >> /Contents 10 0 R >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 7 0 R /F2 8 0 R >> >> /Contents 11 0 R >>
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 7 0 R /F2 8 0 R >> >> /Contents 12 0 R >>
+endobj
+7 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+8 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+9 0 obj
+<< /Length 4108 >>
+stream
+0.03 0.07 0.15 rg
+0 740 595.28 102 re f
+0 0.94 1.0 RG
+2.5 w
+0 740 595.28 0 re S
+
+BT
+/F2 18 Tf
+1 1 1 rg
+40 798 Td
+(AEROFATIGUE OPERATIONAL SAFETY SYSTEM) Tj
+ET
+
+BT
+/F2 12 Tf
+0 0.94 1.0 rg
+40 776 Td
+(COMPREHENSIVE USER MANUAL & SYSTEM OPERATIONS GUIDE) Tj
+ET
+
+BT
+/F1 8.5 Tf
+0.8 0.85 0.9 rg
+40 754 Td
+(Doc Ref: AFM-UM-2026-V2  |  Aviation Fatigue Risk Management  |  Naval & Flight Ops) Tj
+ET
+
+0.92 0.95 0.99 rg
+40 645 515.28 80 re f
+0.65 0.78 0.92 RG
+1 w
+40 645 515.28 80 re S
+0.08 0.18 0.35 rg
+40 705 515.28 20 re f
+
+BT
+/F2 9.5 Tf
+1 1 1 rg
+50 711 Td
+(1. SYSTEM OVERVIEW & CORE OBJECTIVES) Tj
+ET
+
+BT
+/F1 8.5 Tf
+0.15 0.2 0.25 rg
+50 690 Td
+(AeroFatigue is a specialized Aviation Operational Fatigue Risk Management System (FRMS) designed to) Tj
+50 677 Td
+(mitigate human factor risks, fatigue-induced errors, and cognitive degradation among flight crew and) Tj
+50 664 Td
+(maintenance personnel. It utilizes empirical circadian algorithms and Cartesian multi-factor scoring.) Tj
+50 651 Td
+(The platform provides continuous real-time duty tracking, automated risk alerting, and supervisory control.) Tj
+ET
+
+0.92 0.95 0.99 rg
+40 435 515.28 195 re f
+0.65 0.78 0.92 RG
+1 w
+40 435 515.28 195 re S
+0.08 0.18 0.35 rg
+40 610 515.28 20 re f
+
+BT
+/F2 9.5 Tf
+1 1 1 rg
+50 616 Td
+(2. DUAL OPERATIONAL ARCHITECTURE & USER ROLES) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.0 0.45 0.7 rg
+50 592 Td
+([A] AIR CREW DIVISION (Pilots, Navigators, Tactical System Operators, Flight Engineers)) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 578 Td
+(  - Focuses on sortie duration, flight intensity, instrument flight (IFR), Night WOCL operations, and rest cycles.) Tj
+50 566 Td
+(  - Enforces mandatory in-flight relief crew rotation criteria and minimum post-flight uninterrupted sleep.) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.0 0.45 0.7 rg
+50 546 Td
+([B] GROUND CREW DIVISION (Line Maintenance, Defect Rectification, Avionics, AMCO, Unit Duty)) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 532 Td
+(  - Monitors hands-on defect rectification, hourly/calendar servicing, flight servicing (AFS/BFS/TRS), and duty chief.) Tj
+50 520 Td
+(  - Prevents cumulative shift fatigue during high turnaround and complex mechanical or structural rectifications.) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.5 0.2 0.7 rg
+50 500 Td
+([C] COMMANDER / ADMIN MASTER CONSOLE) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 486 Td
+(  - Unified fleet-wide command dashboard aggregating all Air Crew and Ground Crew fatigue indices.) Tj
+50 474 Td
+(  - Provides master audit logs, global personnel management, credential controls, and cross-section analytics.) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.1 0.5 0.3 rg
+50 454 Td
+([D] INDIVIDUAL CREW MEMBER DASHBOARD) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 441 Td
+(  - Protected personal portal with 4-digit PIN for logging duty entries, viewing graphs, and reviewing history.) Tj
+ET
+
+0.92 0.95 0.99 rg
+40 240 515.28 180 re f
+0.65 0.78 0.92 RG
+1 w
+40 240 515.28 180 re S
+0.08 0.18 0.35 rg
+40 400 515.28 20 re f
+
+BT
+/F2 9.5 Tf
+1 1 1 rg
+50 406 Td
+(3. CLOUD PERSISTENCE & OFFLINE ARCHITECTURE) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.1 0.2 0.4 rg
+50 382 Td
+(1. Real-Time Google Firebase Firestore Cloud Sync:) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 369 Td
+(  Every personnel record, fatigue check-in, profile update, and audit log is automatically synchronized with cloud) Tj
+50 357 Td
+(  Firestore collections (aerofatigue_personnel, aerofatigue_logs, aerofatigue_config) across all devices.) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.1 0.2 0.4 rg
+50 337 Td
+(2. Resilient Offline Local Caching:) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 324 Td
+(  The application maintains a high-speed local browser cache. If internet or server connection drops, all operations) Tj
+50 312 Td
+(  continue without interruption and automatically synchronize when connectivity is restored.) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.1 0.2 0.4 rg
+50 292 Td
+(3. Firebase Multi-Factor Authentication:) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 279 Td
+(  Supports secure Email/Password authentication and one-click Google Sign-In for authorized military and ops staff.) Tj
+ET
+
+BT
+/F1 7.5 Tf
+0.4 0.45 0.5 rg
+40 50 Td
+(AeroFatigue Operations Manual  |  Naval & Flight Operations Safety  |  Page 1 of 4) Tj
+ET
+endstream
+endobj
+10 0 obj
+<< /Length 4398 >>
+stream
+0.03 0.07 0.15 rg
+0 760 595.28 82 re f
+0 0.94 1.0 RG
+2 w
+0 760 595.28 0 re S
+
+BT
+/F2 15 Tf
+1 1 1 rg
+40 805 Td
+(AEROFATIGUE MATHEMATICAL SCORING MODEL) Tj
+ET
+
+BT
+/F1 9 Tf
+0.8 0.85 0.9 rg
+40 778 Td
+(Section 2: Empirical Risk Formulation, Weighting Factors & Algorithmic Computations) Tj
+ET
+
+0.92 0.95 0.99 rg
+40 480 515.28 265 re f
+0.65 0.78 0.92 RG
+1 w
+40 480 515.28 265 re S
+0.08 0.18 0.35 rg
+40 725 515.28 20 re f
+
+BT
+/F2 9.5 Tf
+1 1 1 rg
+50 731 Td
+(THE 5-FACTOR FATIGUE ACCUMULATION ALGORITHM (0 TO 100 POINTS)) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.85 0.15 0.2 rg
+50 708 Td
+(1. Sleep Debt Penalty Factor (0 to 30 Points):) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 695 Td
+(   Calculated from prior 24-hour sleep duration with progressive non-linear escalation below 6 hours:) Tj
+50 683 Td
+(   - 8.0+ hours = 0 pts (Optimal)  |  7.0 to 7.9 hrs = 5 pts (Mild)  |  6.0 to 6.9 hrs = 12 pts (Moderate)) Tj
+50 671 Td
+(   - 5.0 to 5.9 hrs = 20 pts (Significant Deficit)  |  < 5.0 hrs = 30 pts (Severe Acute Deprivation)) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.85 0.45 0.0 rg
+50 648 Td
+(2. Duty Period Duration Factor (0 to 25 Points):) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 635 Td
+(   Derived dynamically from Duty Start Time to Duty End Time:) Tj
+50 623 Td
+(   - <= 8.0 hours = 0 pts  |  8.1 to 10.0 hrs = +5 pts  |  10.1 to 12.0 hrs = +12 pts) Tj
+50 611 Td
+(   - 12.1 to 14.0 hrs = +18 pts  |  > 14.0 hrs = +25 pts (Max shift fatigue ceiling)) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.2 0.4 0.8 rg
+50 588 Td
+(3. Circadian Rhythm & Shift Window (0 or 20 Points):) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 575 Td
+(   - Day Shift (06:00 to 22:00): 0 Points (Natural biological diurnal activity)) Tj
+50 563 Td
+(   - Night Duty (22:00 to 06:00 WOCL Window): +20 Points (Window of Circadian Low penalty)) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.6 0.2 0.7 rg
+50 540 Td
+(4. Consecutive Duty Days Progression (0 to 10 Points):) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 527 Td
+(   Auto-calculated from historical shift dates to capture cumulative chronic fatigue:) Tj
+50 515 Td
+(   - Days 1 to 3 = 0 pts  |  Day 4 = +3 pts  |  Day 5 = +6 pts  |  Day 6 = +8 pts  |  Days 7+ = +10 pts) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.05 0.5 0.35 rg
+50 492 Td
+(5. Workload Intensity Factor (0 to 10 Points):) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 480 Td
+(   - Low (0 pts)  |  Medium (+5 pts)  |  High (+10 pts) -- Governed by Aircraft Workload Manual) Tj
+ET
+
+0.92 0.95 0.99 rg
+40 230 515.28 235 re f
+0.65 0.78 0.92 RG
+1 w
+40 230 515.28 235 re S
+0.08 0.18 0.35 rg
+40 445 515.28 20 re f
+
+BT
+/F2 9.5 Tf
+1 1 1 rg
+50 451 Td
+(WORK INTENSITY SQUADRON CLASSIFICATION REFERENCE) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.1 0.5 0.3 rg
+50 428 Td
+([+] LOW-INTENSITY WORK (0 Points)) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 415 Td
+(  - Documentation & Records: Form filling, system logs, completing job cards, maintenance records.) Tj
+50 403 Td
+(  - Unit Nominations: Parade, cleanship duties, line chief, duty chief, administrative assignments.) Tj
+50 391 Td
+(  - Flight Ops: En-route standard cruise with low air traffic, daylight VFR benign weather.) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.85 0.5 0.0 rg
+50 368 Td
+([+] MEDIUM-INTENSITY WORK (+5 Points)) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 355 Td
+(  - Flight Servicing: AFS, BFS, TRS, and BTWS operational aircraft preparation activities.) Tj
+50 343 Td
+(  - Mission Support: Tactical TC installation, cargo loading/unloading, sortie preparations.) Tj
+50 331 Td
+(  - AMCO & Staff Office: Aircraft Maintenance Control Organization coordination and squadron administration.) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.85 0.15 0.2 rg
+50 308 Td
+([+] HIGH-INTENSITY WORK (+10 Points)) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 295 Td
+(  - Defect Rectification: Direct technical troubleshooting, diagnosis, defect isolation, component replacement.) Tj
+50 283 Td
+(  - Scheduled Servicing: Mandatory hourly-based and calendar-based major scheduled servicing.) Tj
+50 271 Td
+(  - Critical Flight Ops: Low-altitude tactical SAR, night IMC, deck landings in heavy sea states.) Tj
+ET
+
+0.05 0.1 0.25 rg
+40 180 515.28 38 re f
+BT
+/F2 9.5 Tf
+0 0.94 1.0 rg
+50 198 Td
+(MASTER FORMULA: Score = Sleep (0-30) + Duty (0-25) + Shift (0/20) + Consec (0-10) + Workload (0-10)) Tj
+ET
+BT
+/F1 8 Tf
+1 1 1 rg
+50 186 Td
+(Final Cartesian score is clamped strictly between [0 and 100] and categorized into 4 Operational Risk Bands.) Tj
+ET
+
+BT
+/F1 7.5 Tf
+0.4 0.45 0.5 rg
+40 50 Td
+(AeroFatigue Operations Manual  |  Naval & Flight Operations Safety  |  Page 2 of 4) Tj
+ET
+endstream
+endobj
+11 0 obj
+<< /Length 4253 >>
+stream
+0.03 0.07 0.15 rg
+0 760 595.28 82 re f
+0 0.94 1.0 RG
+2 w
+0 760 595.28 0 re S
+
+BT
+/F2 15 Tf
+1 1 1 rg
+40 805 Td
+(CARTESIAN RISK BANDS & SUPERVISORY PROTOCOLS) Tj
+ET
+
+BT
+/F1 9 Tf
+0.8 0.85 0.9 rg
+40 778 Td
+(Section 3: Four-Tier Operational Risk Matrix, Thresholds & Mandatory Actions) Tj
+ET
+
+0.92 0.95 0.99 rg
+40 435 515.28 310 re f
+0.65 0.78 0.92 RG
+1 w
+40 435 515.28 310 re S
+0.08 0.18 0.35 rg
+40 725 515.28 20 re f
+
+BT
+/F2 9.5 Tf
+1 1 1 rg
+50 731 Td
+(FOUR-TIER OPERATIONAL RISK BANDS & MANDATORY MITIGATION) Tj
+ET
+
+0.88 0.96 0.9 rg
+50 655 495.28 60 re f
+0.1 0.6 0.3 RG
+1.5 w
+50 655 495.28 60 re S
+BT
+/F2 9.5 Tf
+0.05 0.5 0.25 rg
+60 698 Td
+(?? 1. LOW RISK (Score: 0 to 24 Points) - GREEN BAND) Tj
+ET
+BT
+/F1 8 Tf
+0.1 0.2 0.2 rg
+60 684 Td
+(  - Status: Personnel fully fit for flight, maintenance, and tactical operations. Optimal mental alertness.) Tj
+60 672 Td
+(  - Directive: Standard shift rotation authorized. Unrestricted flight and line maintenance clearance.) Tj
+60 660 Td
+(  - Next Check: Routine pre-shift check-in on next scheduled duty date.) Tj
+ET
+
+0.99 0.96 0.88 rg
+50 580 495.28 65 re f
+0.85 0.6 0.0 RG
+1.5 w
+50 580 495.28 65 re S
+BT
+/F2 9.5 Tf
+0.75 0.45 0.0 rg
+60 628 Td
+(?? 2. MODERATE RISK (Score: 25 to 49 Points) - YELLOW BAND) Tj
+ET
+BT
+/F1 8 Tf
+0.2 0.2 0.1 rg
+60 614 Td
+(  - Status: Noticeable fatigue onset. Minor degradation in reaction times and sustained vigilance.) Tj
+60 602 Td
+(  - Directive: Active duty cycle monitoring. Mandatory 15-minute hydration & rest break every 4 hours.) Tj
+60 590 Td
+(  - Precaution: Avoid assigning consecutive night sorties or high-complexity solo maintenance tasks.) Tj
+ET
+
+0.99 0.93 0.88 rg
+50 505 495.28 65 re f
+0.9 0.4 0.0 RG
+1.5 w
+50 505 495.28 65 re S
+BT
+/F2 9.5 Tf
+0.85 0.35 0.0 rg
+60 553 Td
+(?? 3. HIGH RISK (Score: 50 to 74 Points) - ORANGE BAND) Tj
+ET
+BT
+/F1 8 Tf
+0.25 0.15 0.1 rg
+60 539 Td
+(  - Status: High cumulative fatigue. Divided attention deficits and elevated risk of procedural slips.) Tj
+60 527 Td
+(  - Directive: Squadron Commander / Shift Supervisor formal approval required prior to task commencement.) Tj
+60 515 Td
+(  - Precaution: Re-evaluate consecutive duty days. Assign safety partner or relief co-pilot for high-risk tasks.) Tj
+ET
+
+0.99 0.88 0.9 rg
+50 440 495.28 55 re f
+0.85 0.1 0.2 RG
+1.5 w
+50 440 495.28 55 re S
+BT
+/F2 9.5 Tf
+0.8 0.1 0.2 rg
+60 478 Td
+(?? 4. CRITICAL RISK (Score: 75 to 100 Points) - RED BAND) Tj
+ET
+BT
+/F1 8 Tf
+0.3 0.1 0.1 rg
+60 464 Td
+(  - Status: Severe exhaustion. Unacceptable probability of catastrophic operational error.) Tj
+60 452 Td
+(  - Directive: MANDATORY GROUNDING & IMMEDIATE STAND DOWN. Minimum 10h uninterrupted rest.) Tj
+ET
+
+0.92 0.95 0.99 rg
+40 220 515.28 200 re f
+0.65 0.78 0.92 RG
+1 w
+40 220 515.28 200 re S
+0.08 0.18 0.35 rg
+40 400 515.28 20 re f
+
+BT
+/F2 9.5 Tf
+1 1 1 rg
+50 406 Td
+(MANDATORY OPERATIONAL SAFETY DIRECTIVES (Aviation FRMS Standards)) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.1 0.2 0.4 rg
+50 382 Td
+(1. Maximum Continuous Duty Shift Limit:) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 370 Td
+(   Standard duty periods must not exceed 12 continuous hours. Shifts extending beyond 12 hours require) Tj
+50 358 Td
+(   mandatory cumulative 1.5 hours of rest breaks and supervisor sign-off. Hard ceiling at 16 hours.) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.1 0.2 0.4 rg
+50 338 Td
+(2. Night Duty (WOCL) Consecutive Shifts Limit:) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 326 Td
+(   Personnel must not be assigned to more than three (3) consecutive night duty shifts without an intervening) Tj
+50 314 Td
+(   24-hour restorative rest period.) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.1 0.2 0.4 rg
+50 294 Td
+(3. In-Flight Relief Crew Rotation:) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 282 Td
+(   Mandatory in-flight relief crew rotation is enforced when mission sortie duration exceeds 7.5 flight hours.) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.1 0.2 0.4 rg
+50 262 Td
+(4. Duplicate Inspection Protocol for Maintenance:) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 250 Td
+(   Any defect rectification performed by ground crew in High Risk (Orange) state requires mandatory duplicate) Tj
+50 238 Td
+(   independent inspection by a designated Flight Safety Officer or Line Chief.) Tj
+ET
+
+BT
+/F1 7.5 Tf
+0.4 0.45 0.5 rg
+40 50 Td
+(AeroFatigue Operations Manual  |  Naval & Flight Operations Safety  |  Page 3 of 4) Tj
+ET
+endstream
+endobj
+12 0 obj
+<< /Length 4442 >>
+stream
+0.03 0.07 0.15 rg
+0 760 595.28 82 re f
+0 0.94 1.0 RG
+2 w
+0 760 595.28 0 re S
+
+BT
+/F2 15 Tf
+1 1 1 rg
+40 805 Td
+(USER INTERFACE & STEP-BY-STEP OPERATOR GUIDE) Tj
+ET
+
+BT
+/F1 9 Tf
+0.8 0.85 0.9 rg
+40 778 Td
+(Section 4: Navigation, Personnel Management, Duty Recording & Admin Controls) Tj
+ET
+
+0.92 0.95 0.99 rg
+40 520 515.28 225 re f
+0.65 0.78 0.92 RG
+1 w
+40 520 515.28 225 re S
+0.08 0.18 0.35 rg
+40 725 515.28 20 re f
+
+BT
+/F2 9.5 Tf
+1 1 1 rg
+50 731 Td
+(1. NAVIGATING THE OPERATIONAL PORTAL & SQUADRON ROSTER) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.0 0.4 0.7 rg
+50 708 Td
+(A. Section Switching & Search:) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 695 Td
+(   - Click [? AIR CREW] or [?? GROUND CREW] tab to switch rosters.) Tj
+50 683 Td
+(   - Use the live search bar to filter by personnel name, ID, rank, or squadron unit in real time.) Tj
+50 671 Td
+(   - Personnel cards show current fatigue risk level, photo avatar, unit name, and last recorded shift.) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.0 0.4 0.7 rg
+50 650 Td
+(B. Adding & Editing Personnel:) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 637 Td
+(   - Click [+ ADD PERSON] to register a new crew member. Provide Name, Designation, Unit, and 4-digit PIN.) Tj
+50 625 Td
+(   - Upload a custom photo avatar (automatically compressed into thumbnail for fast cloud sync).) Tj
+50 613 Td
+(   - Click [?? Edit] on any card to update designation, unit, photo, or PIN.) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.0 0.4 0.7 rg
+50 592 Td
+(C. Accessing Individual Crew Dashboard:) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 579 Td
+(   - Click on any crew member card. Enter the member's 4-digit security PIN (Default: 1234).) Tj
+50 567 Td
+(   - The individual dashboard opens with 4 dedicated views: Overview, Graph, History, and Record Entry.) Tj
+ET
+
+0.92 0.95 0.99 rg
+40 270 515.28 235 re f
+0.65 0.78 0.92 RG
+1 w
+40 270 515.28 235 re S
+0.08 0.18 0.35 rg
+40 485 515.28 20 re f
+
+BT
+/F2 9.5 Tf
+1 1 1 rg
+50 491 Td
+(2. STEP-BY-STEP DUTY RECORDING & DASHBOARD TOOLS) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.1 0.5 0.3 rg
+50 468 Td
+(Step 1 - Date & Synchronized Live System Time:) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 455 Td
+(   - Date and record time are automatically synchronized with system current time. Editable if logging past shifts.) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.1 0.5 0.3 rg
+50 435 Td
+(Step 2 - Duty Cycle, Shift Category & Intensity:) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 422 Td
+(   - Set Duty Start and End Times (Duration is calculated dynamically in real-time).) Tj
+50 410 Td
+(   - Choose Shift Category: Day Shift (0 pts) or Night Duty (+20 pts WOCL).) Tj
+50 398 Td
+(   - Consecutive Duty Days: Auto-calculated from previous shifts (editable from 1 to 14 days).) Tj
+50 386 Td
+(   - Work Intensity: Select Low (0 pts), Medium (+5 pts), or High (+10 pts) with inline reference manual link.) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.1 0.5 0.3 rg
+50 366 Td
+(Step 3 - Rest & Operational Notes:) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 353 Td
+(   - Input Sleep Duration in hours obtained prior to duty (0.5h step slider).) Tj
+50 341 Td
+(   - Enter optional notes (defect ticket numbers, sortie callsign, weather conditions).) Tj
+50 329 Td
+(   - Click [Save Fatigue Entry] -> Instant cloud write and live score update.) Tj
+ET
+
+BT
+/F2 8.5 Tf
+0.1 0.5 0.3 rg
+50 309 Td
+(Interactive Cartesian Graph & History Log:) Tj
+ET
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 296 Td
+(   - Graph tab renders SVG Cartesian fatigue curves across time with hover tooltips and colored risk bands.) Tj
+50 284 Td
+(   - Duty History tab lists all past shifts with in-place Edit and Delete controls.) Tj
+ET
+
+0.92 0.95 0.99 rg
+40 100 515.28 155 re f
+0.65 0.78 0.92 RG
+1 w
+40 100 515.28 155 re S
+0.08 0.18 0.35 rg
+40 235 515.28 20 re f
+
+BT
+/F2 9.5 Tf
+1 1 1 rg
+50 241 Td
+(3. COMMANDER ADMIN CONSOLE & REFERENCE CENTER) Tj
+ET
+
+BT
+/F1 8 Tf
+0.15 0.2 0.25 rg
+50 218 Td
+(? Admin Console Login: Click [??? ADMIN COMMAND] (Default ID: admin | Pass: admin123).) Tj
+50 206 Td
+(? Fleet Overview: Real-time risk distribution metrics, section breakdowns, and high-risk alerts.) Tj
+50 194 Td
+(? Master History: Searchable cross-squadron duty logs with sorting and filtering.) Tj
+50 182 Td
+(? Security: Change Admin Password, inspect Firebase connection status, and audit active crew.) Tj
+50 170 Td
+(? Reference Menu: Click [?? Refer ?] at top right to download Aircraft Workload Manual or User Manual PDF.) Tj
+ET
+
+BT
+/F1 7.5 Tf
+0.4 0.45 0.5 rg
+40 50 Td
+(AeroFatigue Operations Manual  |  Naval & Flight Operations Safety  |  Page 4 of 4  |  End of Document) Tj
+ET
+endstream
+endobj
+xref
+0 13
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000133 00000 n 
+0000000275 00000 n 
+0000000418 00000 n 
+0000000561 00000 n 
+0000000704 00000 n 
+0000000774 00000 n 
+0000000849 00000 n 
+0000005009 00000 n 
+0000009460 00000 n 
+0000013766 00000 n 
+trailer
+<< /Size 13 /Root 1 0 R >>
+startxref
+18261
+%%EOF
