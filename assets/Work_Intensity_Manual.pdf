@@ -1,0 +1,257 @@
+%PDF-1.4
+1 0 obj
+<<
+  /Type /Catalog
+  /Pages 2 0 R
+>>
+endobj
+2 0 obj
+<<
+  /Type /Pages
+  /Kids [3 0 R]
+  /Count 1
+>>
+endobj
+3 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /MediaBox [0 0 595.28 841.89]
+  /Resources <<
+    /Font <<
+      /F1 4 0 R
+      /F2 5 0 R
+    >>
+  >>
+  /Contents 6 0 R
+>>
+endobj
+4 0 obj
+<<
+  /Type /Font
+  /Subtype /Type1
+  /BaseFont /Helvetica
+>>
+endobj
+5 0 obj
+<<
+  /Type /Font
+  /Subtype /Type1
+  /BaseFont /Helvetica-Bold
+>>
+endobj
+6 0 obj
+<< /Length 2600 >>
+stream
+0.03 0.07 0.15 rg
+0 740 595.28 102 re f
+0 0.94 1.0 RG
+2 w
+0 740 595.28 0 re S
+BT
+/F2 20 Tf
+1 1 1 rg
+40 795 Td
+(AEROFATIGUE OPERATIONAL SAFETY) Tj
+ET
+BT
+/F2 13 Tf
+0 0.94 1.0 rg
+40 770 Td
+(WORK INTENSITY MANUAL & FATIGUE MATRIX) Tj
+ET
+BT
+/F1 9 Tf
+0.8 0.85 0.9 rg
+40 750 Td
+(Document Ref: AFM-WI-2026-V1  |  Aviation Operational Safety System  |  Naval & Flight Ops) Tj
+ET
+0.9 0.93 0.98 rg
+40 680 515.28 40 re f
+0.7 0.8 0.9 RG
+1 w
+40 680 515.28 40 re S
+BT
+/F2 11 Tf
+0.1 0.2 0.4 rg
+50 705 Td
+(1. PURPOSE & SCOPE) Tj
+ET
+BT
+/F1 9 Tf
+0.2 0.25 0.3 rg
+50 690 Td
+(This manual defines operational workload levels, fatigue risk factors, and mandatory mitigation procedures.) Tj
+ET
+0.95 0.97 1.0 rg
+40 440 515.28 225 re f
+0.75 0.82 0.9 RG
+1 w
+40 440 515.28 225 re S
+0.1 0.2 0.4 rg
+40 640 515.28 25 re f
+BT
+/F2 10 Tf
+1 1 1 rg
+50 648 Td
+(2. WORK INTENSITY CATEGORIZATION & SCORING CRITERIA) Tj
+ET
+BT
+/F2 9 Tf
+0.1 0.5 0.3 rg
+50 620 Td
+([+] LOW INTENSITY  -  Score Factor: 0 Points) Tj
+ET
+BT
+/F1 8.5 Tf
+0.15 0.2 0.25 rg
+50 605 Td
+(  - Scope: Routine ground handling, scheduled daily pre-flight walkarounds, light administrative reviews.) Tj
+50 592 Td
+(  - Flight Ops: En-route standard cruise with low air traffic, daylight VFR benign weather.) Tj
+50 579 Td
+(  - Fatigue Impact: Baseline fatigue rate. Full cognitive resilience maintained.) Tj
+ET
+BT
+/F2 9 Tf
+0.8 0.5 0.0 rg
+50 550 Td
+([+] MEDIUM INTENSITY  -  Score Factor: +5 Points) Tj
+ET
+BT
+/F1 8.5 Tf
+0.15 0.2 0.25 rg
+50 535 Td
+(  - Scope: High turnaround operations, line defect rectification, intensive pre-flight avionics checks.) Tj
+50 522 Td
+(  - Flight Ops: Multi-leg sorties, moderate instrument flight (IFR), controlled military airspace maneuvers.) Tj
+50 509 Td
+(  - Fatigue Impact: Noticeable cognitive fatigue after 6+ hours. Short rest breaks recommended.) Tj
+ET
+BT
+/F2 9 Tf
+0.85 0.15 0.2 rg
+50 480 Td
+([+] HIGH INTENSITY  -  Score Factor: +10 Points) Tj
+ET
+BT
+/F1 8.5 Tf
+0.15 0.2 0.25 rg
+50 465 Td
+(  - Scope: Complex engine/gearbox changes, SAR emergency deployment, deck landing in rough seas.) Tj
+50 452 Td
+(  - Flight Ops: Low-altitude tactical SAR, severe turbulence/night IMC, complex tactical missions.) Tj
+ET
+0.95 0.97 1.0 rg
+40 260 515.28 165 re f
+0.75 0.82 0.9 RG
+1 w
+40 260 515.28 165 re S
+0.1 0.2 0.4 rg
+40 400 515.28 25 re f
+BT
+/F2 10 Tf
+1 1 1 rg
+50 408 Td
+(3. CARTESIAN RISK BANDS & SUPERVISORY PROTOCOLS) Tj
+ET
+BT
+/F2 8.5 Tf
+0.05 0.55 0.35 rg
+50 380 Td
+(LOW RISK (0 - 24 pts):) Tj
+ET
+BT
+/F1 8.5 Tf
+0.15 0.2 0.25 rg
+180 380 Td
+(Personnel fully fit for flight & maintenance tasks. Standard shift rotation.) Tj
+ET
+BT
+/F2 8.5 Tf
+0.85 0.55 0.0 rg
+50 355 Td
+(MODERATE RISK (25 - 49 pts):) Tj
+ET
+BT
+/F1 8.5 Tf
+0.15 0.2 0.25 rg
+180 355 Td
+(Monitor duty cycle. Mandatory 15-min hydration & rest break after 4 hrs.) Tj
+ET
+BT
+/F2 8.5 Tf
+0.9 0.4 0.0 rg
+50 330 Td
+(HIGH RISK (50 - 74 pts):) Tj
+ET
+BT
+/F1 8.5 Tf
+0.15 0.2 0.25 rg
+180 330 Td
+(Supervisor approval required. Re-evaluate consecutive duty days & rest.) Tj
+ET
+BT
+/F2 8.5 Tf
+0.85 0.1 0.2 rg
+50 305 Td
+(CRITICAL RISK (75 - 100 pts):) Tj
+ET
+BT
+/F1 8.5 Tf
+0.85 0.1 0.2 rg
+180 305 Td
+(MANDATORY GROUNDING / STAND DOWN. Minimum 10h uninterrupted rest.) Tj
+ET
+BT
+/F1 8 Tf
+0.3 0.35 0.4 rg
+50 275 Td
+(Formula: Score = Sleep Penalty (0-30) + Duty Duration (0-25) + Shift Circadian (0/20) + Consec Days (0-10) + Workload (0-10)) Tj
+ET
+0.9 0.93 0.98 rg
+40 180 515.28 65 re f
+0.7 0.8 0.9 RG
+1 w
+40 180 515.28 65 re S
+BT
+/F2 9.5 Tf
+0.1 0.2 0.4 rg
+50 225 Td
+(4. MANDATORY OPERATIONAL SAFETY DIRECTIVES) Tj
+ET
+BT
+/F1 8 Tf
+0.2 0.25 0.3 rg
+50 208 Td
+(1. Duty periods exceeding 12 hours must incorporate 1.5 hours cumulative recovery breaks.) Tj
+50 195 Td
+(2. Night Duty (22:00 - 06:00 WOCL window) automatically incurs +20 circadian fatigue points.) Tj
+50 182 Td
+(3. In-flight relief crew rotation is mandatory when mission flight time exceeds 7.5 consecutive hours.) Tj
+ET
+BT
+/F1 7.5 Tf
+0.5 0.5 0.5 rg
+40 50 Td
+(AeroFatigue Decision Support System  |  Naval Aviation Fatigue Risk Management  |  Confidential & Proprietary) Tj
+ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+00000000115 00000 n 
+0000000266 00000 n 
+0000000343 00000 n 
+0000000425 00000 n 
+trailer
+<<
+  /Size 7
+  /Root 1 0 R
+>>
+startxref
+3080
+%%EOF
