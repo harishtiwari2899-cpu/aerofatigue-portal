@@ -2871,93 +2871,83 @@
                   </button>
                 )}
 
-                {/* Dedicated User Manual Button */}
-                <button
-                  type="button"
-                  onClick={() => setShowUserManualModal(true)}
-                  className="px-3 py-1.5 rounded-xl border border-cyan-500/50 bg-[#0B132B] hover:bg-[#162550] text-[#00F0FF] text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-md hover:shadow-[0_0_15px_rgba(0,240,255,0.3)]"
-                  title="Open Interactive System User Manual (How to Use Application)"
-                >
-                  <span>📘</span>
-                  <span className="hidden sm:inline">User Manual</span>
-                  <span className="sm:hidden">Manual</span>
-                </button>
-
-                {/* Refer Dropdown Menu */}
+                {/* Refer Dropdown Menu (Contains All Manuals & Guides) */}
                 <div className="relative">
                   <button
                     type="button"
                     onClick={() => setShowReferMenu(!showReferMenu)}
-                    className="px-3 py-1.5 rounded-xl border border-cyan-500/40 bg-[#0B132B] hover:bg-[#162550] text-cyan-300 text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-md"
-                    title="Reference Documents & Manuals"
+                    className="px-3 py-1.5 rounded-xl border border-cyan-500/40 bg-[#0B132B] hover:bg-[#162550] text-cyan-300 text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-md hover:border-cyan-400"
+                    title="Reference Manuals & Application User Guide"
                   >
                     <span>📖</span>
                     <span>Refer</span>
                     <span className="text-[10px]">▾</span>
                   </button>
                   {showReferMenu && (
-                    <div className="absolute right-0 mt-2 w-72 rounded-xl bg-[#081024] border border-cyan-500/50 shadow-2xl p-2.5 z-50">
+                    <div className="absolute right-0 mt-2 w-80 rounded-xl bg-[#081024] border border-cyan-500/50 shadow-2xl p-2.5 z-50 font-sans animate-fadeIn">
                       <div className="text-[10px] font-mono uppercase text-cyan-400 font-bold px-2 py-1 border-b border-[#1E3264] flex items-center justify-between">
                         <span>📖 Reference Documentation</span>
-                        <span className="text-[9px] bg-cyan-950 px-1.5 py-0.5 rounded border border-cyan-500/30 text-cyan-300">PDF & Guides</span>
+                        <span className="text-[9px] bg-cyan-950 px-1.5 py-0.5 rounded border border-cyan-500/30 text-cyan-300 font-mono">Manuals & Guides</span>
                       </div>
-                      <div className="space-y-1.5 mt-1.5">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowReferMenu(false);
-                            setShowUserManualModal(true);
-                          }}
-                          className="w-full text-left p-2 rounded-lg text-xs font-mono font-bold text-slate-200 hover:bg-cyan-500/20 hover:text-cyan-300 border border-transparent hover:border-cyan-500/40 flex items-center justify-between group transition-all"
-                          title="Open Interactive User Manual Guide"
-                        >
-                          <div className="flex items-start gap-2">
+                      <div className="space-y-2 mt-2 font-mono text-xs">
+                        
+                        {/* 1. Application User Manual */}
+                        <div className="p-2 rounded-lg bg-[#0F1C3F]/60 border border-[#1E3264] hover:border-cyan-500/50 transition-colors">
+                          <div className="flex items-center gap-2 mb-1">
                             <span className="text-base">📘</span>
-                            <div>
-                              <div className="text-slate-100 group-hover:text-cyan-300">Complete User Manual</div>
-                              <div className="text-[10px] text-slate-400 font-normal font-sans">How to use application & all features</div>
-                            </div>
+                            <span className="font-bold text-slate-100">Application User Manual</span>
                           </div>
-                          <span className="text-[10px] text-cyan-400 font-mono group-hover:translate-x-0.5 transition-transform shrink-0">VIEW ↗</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowReferMenu(false);
-                            downloadUserManual();
-                          }}
-                          className="w-full text-left p-2 rounded-lg text-xs font-mono font-bold text-slate-200 hover:bg-cyan-500/20 hover:text-cyan-300 border border-transparent hover:border-cyan-500/40 flex items-center justify-between group transition-all"
-                          title="Download AeroFatigue Complete User Manual as PDF"
-                        >
-                          <div className="flex items-start gap-2">
-                            <span className="text-base">📥</span>
-                            <div>
-                              <div className="text-slate-100 group-hover:text-cyan-300">Download User Manual PDF</div>
-                              <div className="text-[10px] text-slate-400 font-normal font-sans">4-Page comprehensive manual</div>
-                            </div>
+                          <p className="text-[11px] text-slate-400 font-sans mb-2 leading-tight">
+                            Explains how to use this application, every function, role, dashboard tool & scoring formula.
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setShowReferMenu(false);
+                                setShowUserManualModal(true);
+                              }}
+                              className="btn-glass text-[10px] py-1 px-2 text-cyan-300 hover:text-white font-bold flex-1"
+                            >
+                              📖 View Guide ↗
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setShowReferMenu(false);
+                                downloadUserManual();
+                              }}
+                              className="btn-cyber text-[10px] py-1 px-2 font-bold flex items-center justify-center gap-1"
+                              title="Download 4-Page PDF User Manual"
+                            >
+                              <span>⬇</span>
+                              <span>PDF</span>
+                            </button>
                           </div>
-                          <span className="text-[10px] text-cyan-400 font-mono group-hover:translate-y-0.5 transition-transform shrink-0">⬇ PDF</span>
-                        </button>
+                        </div>
 
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowReferMenu(false);
-                            downloadWorkIntensityManual();
-                          }}
-                          className="w-full text-left p-2 rounded-lg text-xs font-mono font-bold text-slate-200 hover:bg-cyan-500/20 hover:text-cyan-300 border border-transparent hover:border-cyan-500/40 flex items-center justify-between group transition-all"
-                          title="Download Aircraft Workload Manual as PDF"
-                        >
-                          <div className="flex items-start gap-2">
+                        {/* 2. Work Intensity Manual */}
+                        <div className="p-2 rounded-lg bg-[#0F1C3F]/60 border border-[#1E3264] hover:border-cyan-500/50 transition-colors">
+                          <div className="flex items-center gap-2 mb-1">
                             <span className="text-base">📄</span>
-                            <div>
-                              <div className="text-slate-100 group-hover:text-cyan-300">Aircraft Workload Manual</div>
-                              <div className="text-[10px] text-slate-400 font-normal font-sans">Squadron work classification guide</div>
-                            </div>
+                            <span className="font-bold text-slate-100">Work Intensity Manual</span>
                           </div>
-                          <span className="text-[10px] text-cyan-400 font-mono group-hover:translate-y-0.5 transition-transform shrink-0">⬇ PDF</span>
-                        </button>
+                          <p className="text-[11px] text-slate-400 font-sans mb-2 leading-tight">
+                            Official 3-page aircraft workload classification guide for squadron personnel.
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowReferMenu(false);
+                              downloadWorkIntensityManual();
+                            }}
+                            className="btn-glass w-full text-[10px] py-1 px-2 text-cyan-300 hover:text-white font-bold flex items-center justify-center gap-1.5"
+                          >
+                            <span>⬇</span>
+                            <span>Download Work Intensity PDF (3P)</span>
+                          </button>
+                        </div>
+
                       </div>
                     </div>
                   )}
@@ -3127,93 +3117,82 @@
                   </button>
                 )}
 
-                {/* Dedicated User Manual Button */}
-                <button
-                  type="button"
-                  onClick={() => setShowUserManualModal(true)}
-                  className="px-3 py-1.5 rounded-xl border border-cyan-500/50 bg-[#0B132B] hover:bg-[#162550] text-[#00F0FF] text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-md hover:shadow-[0_0_15px_rgba(0,240,255,0.3)]"
-                  title="Open Interactive System User Manual (How to Use Application)"
-                >
-                  <span>📘</span>
-                  <span className="hidden sm:inline">User Manual</span>
-                  <span className="sm:hidden">Manual</span>
-                </button>
-
-                {/* Refer Dropdown Menu */}
+                {/* Refer Dropdown Menu (Contains All Manuals & Guides) */}
                 <div className="relative">
                   <button
                     type="button"
                     onClick={() => setShowReferMenu(!showReferMenu)}
-                    className="px-3 py-1.5 rounded-xl border border-cyan-500/40 bg-[#0B132B] hover:bg-[#162550] text-cyan-300 text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-md"
-                    title="Reference Documents & Manuals"
+                    className="px-3 py-1.5 rounded-xl border border-cyan-500/40 bg-[#0B132B] hover:bg-[#162550] text-cyan-300 text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-md hover:border-cyan-400"
+                    title="Reference Manuals & Application User Guide"
                   >
                     <span>📖</span>
                     <span>Refer</span>
                     <span className="text-[10px]">▾</span>
                   </button>
                   {showReferMenu && (
-                    <div className="absolute right-0 mt-2 w-72 rounded-xl bg-[#081024] border border-cyan-500/50 shadow-2xl p-2.5 z-50">
+                    <div className="absolute right-0 mt-2 w-80 rounded-xl bg-[#081024] border border-cyan-500/50 shadow-2xl p-2.5 z-50 font-sans animate-fadeIn">
                       <div className="text-[10px] font-mono uppercase text-cyan-400 font-bold px-2 py-1 border-b border-[#1E3264] flex items-center justify-between">
                         <span>📖 Reference Documentation</span>
-                        <span className="text-[9px] bg-cyan-950 px-1.5 py-0.5 rounded border border-cyan-500/30 text-cyan-300">PDF & Guides</span>
+                        <span className="text-[9px] bg-cyan-950 px-1.5 py-0.5 rounded border border-cyan-500/30 text-cyan-300 font-mono">Manuals & Guides</span>
                       </div>
-                      <div className="space-y-1.5 mt-1.5">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowReferMenu(false);
-                            setShowUserManualModal(true);
-                          }}
-                          className="w-full text-left p-2 rounded-lg text-xs font-mono font-bold text-slate-200 hover:bg-cyan-500/20 hover:text-cyan-300 border border-transparent hover:border-cyan-500/40 flex items-center justify-between group transition-all"
-                          title="Open Interactive User Manual Guide"
-                        >
-                          <div className="flex items-start gap-2">
+                      <div className="space-y-2 mt-2 font-mono text-xs">
+                        
+                        {/* 1. Application User Manual */}
+                        <div className="p-2 rounded-lg bg-[#0F1C3F]/60 border border-[#1E3264] hover:border-cyan-500/50 transition-colors">
+                          <div className="flex items-center gap-2 mb-1">
                             <span className="text-base">📘</span>
-                            <div>
-                              <div className="text-slate-100 group-hover:text-cyan-300">Complete User Manual</div>
-                              <div className="text-[10px] text-slate-400 font-normal font-sans">How to use application & all features</div>
-                            </div>
+                            <span className="font-bold text-slate-100">Application User Manual</span>
                           </div>
-                          <span className="text-[10px] text-cyan-400 font-mono group-hover:translate-x-0.5 transition-transform shrink-0">VIEW ↗</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowReferMenu(false);
-                            downloadUserManual();
-                          }}
-                          className="w-full text-left p-2 rounded-lg text-xs font-mono font-bold text-slate-200 hover:bg-cyan-500/20 hover:text-cyan-300 border border-transparent hover:border-cyan-500/40 flex items-center justify-between group transition-all"
-                          title="Download AeroFatigue Complete User Manual as PDF"
-                        >
-                          <div className="flex items-start gap-2">
-                            <span className="text-base">📥</span>
-                            <div>
-                              <div className="text-slate-100 group-hover:text-cyan-300">Download User Manual PDF</div>
-                              <div className="text-[10px] text-slate-400 font-normal font-sans">4-Page comprehensive manual</div>
-                            </div>
+                          <p className="text-[11px] text-slate-400 font-sans mb-2 leading-tight">
+                            Explains how to use this application, every function, role, dashboard tool & scoring formula.
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setShowReferMenu(false);
+                                setShowUserManualModal(true);
+                              }}
+                              className="btn-glass text-[10px] py-1 px-2 text-cyan-300 hover:text-white font-bold flex-1"
+                            >
+                              📖 View Guide ↗
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setShowReferMenu(false);
+                                downloadUserManual();
+                              }}
+                              className="btn-cyber text-[10px] py-1 px-2 font-bold flex items-center justify-center gap-1"
+                              title="Download 4-Page PDF User Manual"
+                            >
+                              <span>⬇</span>
+                              <span>PDF</span>
+                            </button>
                           </div>
-                          <span className="text-[10px] text-cyan-400 font-mono group-hover:translate-y-0.5 transition-transform shrink-0">⬇ PDF</span>
-                        </button>
+                        </div>
 
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowReferMenu(false);
-                            downloadWorkIntensityManual();
-                          }}
-                          className="w-full text-left p-2 rounded-lg text-xs font-mono font-bold text-slate-200 hover:bg-cyan-500/20 hover:text-cyan-300 border border-transparent hover:border-cyan-500/40 flex items-center justify-between group transition-all"
-                          title="Download Aircraft Workload Manual as PDF"
-                        >
-                          <div className="flex items-start gap-2">
+                        {/* 2. Work Intensity Manual */}
+                        <div className="p-2 rounded-lg bg-[#0F1C3F]/60 border border-[#1E3264] hover:border-cyan-500/50 transition-colors">
+                          <div className="flex items-center gap-2 mb-1">
                             <span className="text-base">📄</span>
-                            <div>
-                              <div className="text-slate-100 group-hover:text-cyan-300">Aircraft Workload Manual</div>
-                              <div className="text-[10px] text-slate-400 font-normal font-sans">Squadron work classification guide</div>
-                            </div>
+                            <span className="font-bold text-slate-100">Work Intensity Manual</span>
                           </div>
-                          <span className="text-[10px] text-cyan-400 font-mono group-hover:translate-y-0.5 transition-transform shrink-0">⬇ PDF</span>
-                        </button>
+                          <p className="text-[11px] text-slate-400 font-sans mb-2 leading-tight">
+                            Official 3-page aircraft workload classification guide for squadron personnel.
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowReferMenu(false);
+                              downloadWorkIntensityManual();
+                            }}
+                            className="btn-glass w-full text-[10px] py-1 px-2 text-cyan-300 hover:text-white font-bold flex items-center justify-center gap-1.5"
+                          >
+                            <span>⬇</span>
+                            <span>Download Work Intensity PDF (3P)</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}
