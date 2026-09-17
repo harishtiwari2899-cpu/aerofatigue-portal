@@ -199,6 +199,33 @@
       appId: ""
     };
 
+    // Sanitize any Javascript object for Firestore (removes undefined, cleans arrays & nulls)
+    function cleanDoc(obj) {
+      if (!obj || typeof obj !== 'object') return obj;
+      const clean = {};
+      for (const [key, val] of Object.entries(obj)) {
+        if (val !== undefined) {
+          if (val === null || typeof val === 'number' || typeof val === 'string' || typeof val === 'boolean') {
+            clean[key] = val;
+          } else if (Array.isArray(val)) {
+            clean[key] = val.map(item => (typeof item === 'object' && item !== null) ? cleanDoc(item) : (item === undefined ? null : item));
+          } else if (typeof val === 'object') {
+            clean[key] = cleanDoc(val);
+          }
+        }
+      }
+      return clean;
+    }
+
+    // Strict Promise Timeout wrapper to prevent hanging operations
+    function withTimeout(promise, ms = 8000, errorMsg = "Operation timed out") {
+      let timer;
+      const timeoutPromise = new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error(errorMsg)), ms);
+      });
+      return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timer));
+    }
+
     function encodeConfigForUrl(config) {
       if (!config || !config.apiKey || !config.projectId) return '';
       try {
@@ -1221,18 +1248,22 @@
                 setPersonnelList(list);
               } else {
                 // Auto-seed cloud if database collection is empty
-                const batch = dbInstance.batch();
-                personnelList.forEach(p => {
-                  batch.set(dbInstance.collection('aerofatigue_personnel').doc(p.id), p);
-                });
-                batch.commit().catch(e => console.error("Initial auto-seed personnel error:", e));
+                const writes = personnelList.map(p => 
+                  dbInstance.collection('aerofatigue_personnel').doc(p.id).set(cleanDoc(p), { merge: true })
+                );
+                Promise.all(writes).catch(e => console.warn("Initial auto-seed personnel:", e));
               }
               setCloudStatus('connected');
+              setCloudError('');
             },
             (err) => {
               console.error('Firestore personnel listener error:', err);
               setCloudStatus('error');
-              setCloudError(err.message || 'Firestore connection error');
+              let msg = err.message || 'Firestore connection error';
+              if (err.code === 'permission-denied' || msg.toLowerCase().includes('permission') || msg.toLowerCase().includes('denied')) {
+                msg = 'Permission Denied: Firestore Security Rules are blocking access. In Firebase Console → Firestore Database → Rules, set: allow read, write: if true;';
+              }
+              setCloudError(msg);
             }
           );
 
@@ -1248,11 +1279,10 @@
                 setFatigueLogs(logs);
               } else {
                 // Auto-seed cloud logs if database collection is empty
-                const batch = dbInstance.batch();
-                fatigueLogs.forEach(l => {
-                  batch.set(dbInstance.collection('aerofatigue_logs').doc(l.id), l);
-                });
-                batch.commit().catch(e => console.error("Initial auto-seed logs error:", e));
+                const writes = fatigueLogs.map(l => 
+                  dbInstance.collection('aerofatigue_logs').doc(l.id).set(cleanDoc(l), { merge: true })
+                );
+                Promise.all(writes).catch(e => console.warn("Initial auto-seed logs:", e));
               }
             },
             (err) => {
@@ -1269,11 +1299,11 @@
                   setAdminCreds({ id: data.id || DEFAULT_ADMIN_ID, password: data.password });
                 }
               } else {
-                dbInstance.collection('aerofatigue_config').doc('admin').set({
+                dbInstance.collection('aerofatigue_config').doc('admin').set(cleanDoc({
                   id: adminCreds.id || DEFAULT_ADMIN_ID,
                   password: adminCreds.password || DEFAULT_ADMIN_PASS,
                   updatedAt: new Date().toISOString()
-                }).catch(e => console.error("Initial auto-seed admin error:", e));
+                }), { merge: true }).catch(e => console.warn("Initial auto-seed admin:", e));
               }
             },
             (err) => {
@@ -1504,32 +1534,76 @@
           return;
         }
         setIsSyncingCloud(true);
+        setCloudError('');
         try {
-          const batch = firestoreDb.batch();
+          // Prepare clean personnel and logs
+          const cleanPersonnel = personnelList.map(p => cleanDoc(p));
+          const cleanLogs = fatigueLogs.map(l => cleanDoc(l));
+          const cleanAdmin = cleanDoc({ id: adminCreds.id, password: adminCreds.password, updatedAt: new Date().toISOString() });
 
-          // Upload all personnel
-          personnelList.forEach(p => {
-            const ref = firestoreDb.collection('aerofatigue_personnel').doc(p.id);
-            batch.set(ref, p, { merge: true });
-          });
+          const uploadTask = async () => {
+            // Upload in parallel using Promise.all for max speed
+            const personWrites = cleanPersonnel.map(p => 
+              firestoreDb.collection('aerofatigue_personnel').doc(p.id).set(p, { merge: true })
+            );
+            const logWrites = cleanLogs.map(l => 
+              firestoreDb.collection('aerofatigue_logs').doc(l.id).set(l, { merge: true })
+            );
+            const adminWrite = firestoreDb.collection('aerofatigue_config').doc('admin').set(cleanAdmin, { merge: true });
 
-          // Upload all fatigue logs
-          fatigueLogs.forEach(l => {
-            const ref = firestoreDb.collection('aerofatigue_logs').doc(l.id);
-            batch.set(ref, l, { merge: true });
-          });
+            await Promise.all([...personWrites, ...logWrites, adminWrite]);
+          };
 
-          // Upload Admin Settings
-          const adminRef = firestoreDb.collection('aerofatigue_config').doc('admin');
-          batch.set(adminRef, { id: adminCreds.id, password: adminCreds.password, updatedAt: new Date().toISOString() }, { merge: true });
-
-          await batch.commit();
+          await withTimeout(uploadTask(), 8000, "Upload timed out (8s limit). Check internet or Firestore Security Rules in Firebase Console.");
           setIsSyncingCloud(false);
-          triggerNotice(`☁️ Successfully uploaded ${personnelList.length} crew profiles & ${fatigueLogs.length} logs to Firebase!`);
+          setCloudStatus('connected');
+          triggerNotice(`⚡ Successfully uploaded ${personnelList.length} crew profiles & ${fatigueLogs.length} logs to Firebase!`);
         } catch (err) {
           setIsSyncingCloud(false);
           console.error("Cloud seed error:", err);
-          triggerNotice(`Cloud upload failed: ${err.message}`, "danger");
+          let userMsg = err.message || "Cloud upload failed";
+          if (userMsg.toLowerCase().includes("permission") || userMsg.toLowerCase().includes("denied")) {
+            userMsg = "Permission Denied: Your Firestore Security Rules are blocking writes. In Firebase Console → Firestore Database → Rules, set: allow read, write: if true;";
+          }
+          setCloudError(userMsg);
+          triggerNotice(`Upload failed: ${userMsg}`, "danger");
+        }
+      };
+
+      const handleTestCloudConnection = async () => {
+        if (!firestoreDb) {
+          triggerNotice("Please enter and save your Firebase configuration first.", "danger");
+          return;
+        }
+        setCloudError('');
+        try {
+          // 1. Test Write
+          const pingRef = firestoreDb.collection('aerofatigue_config').doc('_connection_test');
+          await withTimeout(
+            pingRef.set({ testTimestamp: new Date().toISOString(), status: 'ok' }, { merge: true }),
+            4000,
+            "Write timed out. Check your Firestore Security Rules (Rules must allow writes)."
+          );
+          // 2. Test Read
+          const snap = await withTimeout(
+            pingRef.get(),
+            3000,
+            "Read timed out."
+          );
+          if (snap.exists) {
+            triggerNotice("✅ Firebase Server Connected! Read & Write permissions verified.", "success");
+            setCloudStatus('connected');
+          } else {
+            triggerNotice("⚠️ Test document was not retrieved.", "danger");
+          }
+        } catch (err) {
+          console.error("Test connection error:", err);
+          let msg = err.message || "Cloud connection test failed";
+          if (msg.toLowerCase().includes("permission") || msg.toLowerCase().includes("denied")) {
+            msg = "Permission Denied: Firestore Security Rules are blocking access. In Firebase Console → Firestore Database → Rules, set: allow read, write: if true;";
+          }
+          setCloudError(msg);
+          triggerNotice(`Test failed: ${msg}`, "danger");
         }
       };
 
@@ -1735,11 +1809,15 @@
 
         // Sync to Cloud Firestore if connected
         if (firestoreDb && cloudStatus === 'connected') {
-          firestoreDb.collection('aerofatigue_config').doc('admin').set({
-            id: adminCreds.id,
-            password: newPasswordInput,
-            updatedAt: new Date().toISOString()
-          }, { merge: true }).catch(err => {
+          withTimeout(
+            firestoreDb.collection('aerofatigue_config').doc('admin').set(cleanDoc({
+              id: adminCreds.id,
+              password: newPasswordInput,
+              updatedAt: new Date().toISOString()
+            }), { merge: true }),
+            5000,
+            "Admin password cloud sync timed out"
+          ).catch(err => {
             console.error('Error updating admin password in Firestore:', err);
           });
         }
@@ -1798,7 +1876,11 @@
 
         // Sync to Cloud Firestore if connected
         if (firestoreDb && cloudStatus === 'connected') {
-          firestoreDb.collection('aerofatigue_personnel').doc(newP.id).set(newP).catch(err => {
+          withTimeout(
+            firestoreDb.collection('aerofatigue_personnel').doc(newP.id).set(cleanDoc(newP), { merge: true }),
+            5000,
+            "Cloud save for personnel timed out"
+          ).catch(err => {
             console.error('Error saving person to Firestore:', err);
           });
         }
@@ -1857,7 +1939,11 @@
 
         // Sync to Cloud Firestore if connected
         if (firestoreDb && cloudStatus === 'connected') {
-          firestoreDb.collection('aerofatigue_personnel').doc(editingPersonId).set(updatedPerson, { merge: true }).catch(err => {
+          withTimeout(
+            firestoreDb.collection('aerofatigue_personnel').doc(editingPersonId).set(cleanDoc(updatedPerson), { merge: true }),
+            5000,
+            "Cloud update for personnel timed out"
+          ).catch(err => {
             console.error('Error updating person in Firestore:', err);
           });
         }
@@ -1887,9 +1973,9 @@
             console.error('Error deleting person from Firestore:', err);
           });
           firestoreDb.collection('aerofatigue_logs').where('personnelId', '==', deletedId).get().then(snap => {
-            const batch = firestoreDb.batch();
-            snap.forEach(doc => batch.delete(doc.ref));
-            batch.commit();
+            const deletes = [];
+            snap.forEach(doc => deletes.push(doc.ref.delete()));
+            return Promise.all(deletes);
           }).catch(err => console.error('Error deleting logs for person:', err));
         }
 
@@ -1940,7 +2026,11 @@
 
         // Sync to Cloud Firestore if connected
         if (firestoreDb && cloudStatus === 'connected') {
-          firestoreDb.collection('aerofatigue_logs').doc(newLog.id).set(newLog).catch(err => {
+          withTimeout(
+            firestoreDb.collection('aerofatigue_logs').doc(newLog.id).set(cleanDoc(newLog)),
+            5000,
+            "Cloud save for duty log timed out"
+          ).catch(err => {
             console.error('Error saving log to Firestore:', err);
           });
         }
@@ -2007,7 +2097,11 @@
 
         // Sync to Cloud Firestore if connected
         if (firestoreDb && cloudStatus === 'connected') {
-          firestoreDb.collection('aerofatigue_logs').doc(editingEntryId).set(updatedLogFields, { merge: true }).catch(err => {
+          withTimeout(
+            firestoreDb.collection('aerofatigue_logs').doc(editingEntryId).set(cleanDoc(updatedLogFields), { merge: true }),
+            5000,
+            "Cloud update for duty log timed out"
+          ).catch(err => {
             console.error('Error updating log in Firestore:', err);
           });
         }
@@ -2142,8 +2236,11 @@
               {/* Seed / Upload to Cloud Action */}
               {cloudStatus === 'connected' && (
                 <div className="p-4 rounded-xl bg-gradient-to-r from-cyan-950/40 to-blue-950/40 border border-cyan-500/40 space-y-3 font-sans text-xs">
-                  <div className="font-bold font-mono text-cyan-300 flex items-center gap-1.5">
-                    <span>☁️</span> Cloud Database Operations
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold font-mono text-cyan-300 flex items-center gap-1.5">
+                      <span>☁️</span> Cloud Database Operations
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-mono">Parallel Fast Stream</span>
                   </div>
                   <p className="text-slate-300 text-[11px]">
                     Upload all currently loaded Air Crew, Ground Crew, and fatigue history records directly into your Firebase Firestore collections.
@@ -2153,14 +2250,22 @@
                       type="button"
                       disabled={isSyncingCloud}
                       onClick={handleSeedDataToCloud}
-                      className="btn-cyber flex-1 py-2.5 text-xs font-mono font-bold flex items-center justify-center gap-2"
+                      className="btn-cyber flex-1 py-2.5 text-xs font-mono font-bold flex items-center justify-center gap-2 shadow-md"
                     >
-                      {isSyncingCloud ? <span>⏳ Uploading Data...</span> : <span>🚀 Upload Local Data to Firebase</span>}
+                      {isSyncingCloud ? <span>⏳ Uploading Data...</span> : <span>⚡ Instant Push Local Data to Firebase</span>}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleTestCloudConnection}
+                      className="btn-glass py-2.5 px-3 text-xs font-mono text-cyan-300 hover:text-white hover:border-cyan-400"
+                      title="Verify Firebase server read and write permissions"
+                    >
+                      🔍 Test Connection
                     </button>
                     <button
                       type="button"
                       onClick={handleDisconnectCloud}
-                      className="btn-glass py-2.5 px-3.5 text-xs text-slate-300 hover:text-rose-300 hover:border-rose-500"
+                      className="btn-glass py-2.5 px-3 text-xs text-slate-300 hover:text-rose-300 hover:border-rose-500"
                       title="Clear saved Firebase configuration and return to in-memory local mode"
                     >
                       🔌 Disconnect
@@ -2168,6 +2273,34 @@
                   </div>
                 </div>
               )}
+
+              {/* Firestore Security Rules Helper Card */}
+              <div className="p-3.5 rounded-xl bg-[#030712] border border-[#1E3264]/80 space-y-2 text-xs font-sans">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-slate-200 font-mono flex items-center gap-1.5">
+                    <span>🛡️</span> Firestore Security Rules (Required for Server Saving)
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const rules = "rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /{document=**} {\n      allow read, write: if true;\n    }\n  }\n}";
+                      if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(rules);
+                      }
+                      triggerNotice("📋 Firestore Security Rules copied to clipboard!");
+                    }}
+                    className="text-[10px] btn-glass py-1 px-2.5 text-cyan-300 hover:text-white font-mono font-bold"
+                  >
+                    📋 Copy Rules
+                  </button>
+                </div>
+                <p className="text-[11px] text-slate-400 leading-tight">
+                  If uploading hangs or fails, your database rules are blocking client writes. In <strong className="text-cyan-400">Firebase Console → Firestore Database → Rules</strong> tab, paste:
+                </p>
+                <div className="p-2 rounded bg-[#081024] border border-[#1E3264] text-[10.5px] font-mono text-emerald-300">
+                  allow read, write: if true;
+                </div>
+              </div>
 
               {/* Configuration Input Form */}
               <form onSubmit={handleSaveCloudConfig} className="space-y-4 text-xs font-sans">
