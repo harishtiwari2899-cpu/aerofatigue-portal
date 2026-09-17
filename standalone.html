@@ -186,7 +186,7 @@
     const { useState, useEffect, useMemo, useRef } = React;
 
     // =========================================================================
-    // GOOGLE FIREBASE CLOUD CONFIGURATION
+    // GOOGLE FIREBASE CLOUD CONFIGURATION & MULTI-DEVICE SYNC ENGINE
     // You can paste your Firebase project config keys below, OR
     // click the "🔥 Cloud Sync" button in the app header to connect directly in the browser!
     // =========================================================================
@@ -199,7 +199,82 @@
       appId: ""
     };
 
+    function encodeConfigForUrl(config) {
+      if (!config || !config.apiKey || !config.projectId) return '';
+      try {
+        const payload = JSON.stringify({
+          apiKey: config.apiKey,
+          authDomain: config.authDomain || `${config.projectId}.firebaseapp.com`,
+          projectId: config.projectId,
+          storageBucket: config.storageBucket || `${config.projectId}.appspot.com`,
+          messagingSenderId: config.messagingSenderId || '',
+          appId: config.appId || ''
+        });
+        return encodeURIComponent(btoa(payload));
+      } catch (e) {
+        return '';
+      }
+    }
+
+    function decodeConfigFromUrl(encodedStr) {
+      if (!encodedStr) return null;
+      try {
+        const raw = atob(decodeURIComponent(encodedStr));
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.apiKey && parsed.projectId) {
+          return parsed;
+        }
+      } catch (e) {}
+      return null;
+    }
+
+    function generateShareableSyncLink(config) {
+      const code = encodeConfigForUrl(config);
+      if (!code) return window.location.href.split('?')[0];
+      const baseUrl = window.location.origin + window.location.pathname;
+      return `${baseUrl}?fb_cfg=${code}`;
+    }
+
     function getStoredFirebaseConfig() {
+      // 1. Check URL query parameters / hash first (for seamless one-click multi-device sharing)
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        let configFromUrl = null;
+
+        const fbCfgEncoded = urlParams.get('fb_cfg');
+        if (fbCfgEncoded) {
+          configFromUrl = decodeConfigFromUrl(fbCfgEncoded);
+        }
+
+        if (!configFromUrl) {
+          const qApiKey = urlParams.get('apiKey');
+          const qProjectId = urlParams.get('projectId');
+          if (qApiKey && qProjectId) {
+            configFromUrl = {
+              apiKey: qApiKey,
+              authDomain: urlParams.get('authDomain') || `${qProjectId}.firebaseapp.com`,
+              projectId: qProjectId,
+              storageBucket: urlParams.get('storageBucket') || `${qProjectId}.appspot.com`,
+              messagingSenderId: urlParams.get('messagingSenderId') || "",
+              appId: urlParams.get('appId') || ""
+            };
+          }
+        }
+
+        if (configFromUrl && configFromUrl.apiKey && configFromUrl.projectId) {
+          localStorage.setItem("aerofatigue_firebase_config_v1", JSON.stringify(configFromUrl));
+          // Clean up query param from address bar so URL remains clean
+          if (window.history && window.history.replaceState) {
+            const cleanUrl = window.location.pathname + window.location.hash;
+            window.history.replaceState({}, document.title, cleanUrl);
+          }
+          return configFromUrl;
+        }
+      } catch (e) {
+        console.warn("Could not check URL parameters for Firebase config:", e);
+      }
+
+      // 2. Check local storage
       try {
         const saved = localStorage.getItem("aerofatigue_firebase_config_v1");
         if (saved) {
@@ -209,6 +284,8 @@
           }
         }
       } catch (e) {}
+
+      // 3. Fallback to hardcoded default config if specified in source
       if (DEFAULT_FIREBASE_CONFIG.projectId && DEFAULT_FIREBASE_CONFIG.apiKey) {
         return DEFAULT_FIREBASE_CONFIG;
       }
@@ -1485,6 +1562,31 @@
         } catch (err) {}
       };
 
+      const handleCopyShareLink = async () => {
+        if (!cloudConfig || !cloudConfig.apiKey || !cloudConfig.projectId) {
+          triggerNotice("Please connect a Firebase project first to generate a live sync link.", "danger");
+          return;
+        }
+        const link = generateShareableSyncLink(cloudConfig);
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(link);
+          } else {
+            const textarea = document.createElement('textarea');
+            textarea.value = link;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+          }
+          triggerNotice("🔗 Live Sync Link copied! Anyone opening this link on another device will automatically connect to this server.");
+        } catch (err) {
+          triggerNotice("Could not auto-copy link. Please select and copy the text box manually.", "danger");
+        }
+      };
+
       // --- FIREBASE AUTHENTICATION HANDLERS ---
       const handleGoogleSignIn = async () => {
         if (!firebase.apps || firebase.apps.length === 0 || !cloudConfig || !cloudConfig.apiKey) {
@@ -2001,6 +2103,41 @@
                   </div>
                 </div>
               </div>
+
+              {/* Multi-Device Live Sharing Link */}
+              {cloudStatus === 'connected' && (
+                <div className="p-4 rounded-xl bg-[#030712] border border-cyan-500/50 space-y-2.5 font-mono text-xs animate-fadeIn">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-cyan-300 flex items-center gap-1.5">
+                      <span>🔗</span> Share Live Server Link (Any Device)
+                    </span>
+                    <span className="text-[10px] bg-emerald-950 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded-full font-bold">
+                      ● LIVE AUTO-SYNC ACTIVE
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-300 font-sans leading-tight">
+                    Send this link to other people or open it on your phone, tablet, or another computer. Anyone opening this link will <strong>automatically connect to this shared Firebase server</strong> without typing any keys, seeing and adding data in real-time.
+                  </p>
+                  <div className="flex items-center gap-2 pt-1">
+                    <input
+                      type="text"
+                      readOnly
+                      value={generateShareableSyncLink(cloudConfig)}
+                      className="cockpit-input flex-1 font-mono text-[11px] select-all truncate text-cyan-300 bg-[#081024] cursor-pointer"
+                      onClick={(e) => e.target.select()}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleCopyShareLink}
+                      className="btn-cyber text-xs py-2 px-3.5 font-mono font-bold flex items-center gap-1.5 shrink-0"
+                      title="Copy Shareable Live Sync Link to Clipboard"
+                    >
+                      <span>📋</span>
+                      <span>Copy Link</span>
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Seed / Upload to Cloud Action */}
               {cloudStatus === 'connected' && (
@@ -2671,30 +2808,38 @@
                   </div>
                 )}
 
-                {/* TAB 6: CLOUD SYNC & OFFLINE */}
+                {/* TAB 6: CLOUD SYNC & MULTI-DEVICE SHARING */}
                 {manualTab === 'cloud_sync' && (
                   <div className="space-y-5 animate-fadeIn">
                     <div className="p-4 rounded-xl bg-cyan-950/30 border border-cyan-500/40 text-cyan-200">
-                      <h3 className="font-mono font-bold text-sm text-[#00F0FF] mb-1">☁️ Real-Time Cloud Persistence & Offline Mode</h3>
+                      <h3 className="font-mono font-bold text-sm text-[#00F0FF] mb-1">☁️ Multi-Device Cloud Server Persistence &amp; Real-Time Sync</h3>
                       <p className="text-xs text-slate-300 leading-relaxed font-sans">
-                        AeroFatigue features bidirectional Firebase Cloud Firestore synchronization and resilient local offline storage.
+                        AeroFatigue features bidirectional Firebase Cloud Firestore synchronization. All duty shifts, personnel rosters, and fatigue metrics saved by any user are automatically stored on the server and instantly synced to every connected device in real-time.
                       </p>
                     </div>
 
                     <div className="space-y-3 font-mono text-xs">
                       <div className="p-3.5 rounded-xl bg-[#081024] border border-[#1E3264]">
-                        <strong className="text-cyan-300 block">🔥 Setting Up Firebase Cloud Sync</strong>
-                        <ol className="list-decimal list-inside space-y-1 text-slate-400 font-sans text-xs mt-1">
-                          <li>Click <strong className="text-amber-300">🔥 Cloud Sync</strong> in the top header.</li>
-                          <li>Paste your Firebase Web App configuration snippet or API key from the Firebase Console (<code className="text-cyan-300">aerofatigue-portal</code>).</li>
-                          <li>Click <strong>Save & Connect Cloud</strong>. All records immediately sync across devices.</li>
+                        <strong className="text-cyan-300 block text-sm">🔗 How to Access Data on Other Devices (Multi-Device Sync)</strong>
+                        <ol className="list-decimal list-inside space-y-1.5 text-slate-300 font-sans text-xs mt-2">
+                          <li>Click <strong className="text-cyan-400">🔥 Cloud Synced</strong> in the top header.</li>
+                          <li>In the <strong>Share Live Server Link</strong> card, click <strong className="text-cyan-300">📋 Copy Link</strong>.</li>
+                          <li>Send this link to other users or open it on your phone, tablet, or another workstation.</li>
+                          <li>When opened, the other device <strong>automatically connects to your Firebase server</strong> without having to type any API keys, and immediately loads the entire database!</li>
                         </ol>
                       </div>
 
                       <div className="p-3.5 rounded-xl bg-[#081024] border border-[#1E3264]">
-                        <strong className="text-cyan-300 block">💾 Zero-Latency Offline Mode</strong>
-                        <p className="text-slate-400 font-sans text-xs mt-1">
-                          Even if you are disconnected from the network or deployed in remote maritime environments, the application continues to operate smoothly using browser cache. When reconnected, data syncs automatically with the server.
+                        <strong className="text-emerald-400 block text-sm">⚡ Automatic Background Server Saving</strong>
+                        <p className="text-slate-300 font-sans text-xs mt-1 leading-relaxed">
+                          Whenever a user adds a crew member, logs a daily duty shift, edits an entry, or updates a password, the change is <strong>automatically written to Firebase Firestore</strong>. Any other person viewing the portal anywhere in the world will see the update live on their screen without even needing to refresh the page.
+                        </p>
+                      </div>
+
+                      <div className="p-3.5 rounded-xl bg-[#081024] border border-[#1E3264]">
+                        <strong className="text-amber-300 block text-sm">💾 Offline Resiliency &amp; Auto-Reconnection</strong>
+                        <p className="text-slate-300 font-sans text-xs mt-1 leading-relaxed">
+                          If network connectivity is lost (e.g., shipboard or remote airfield deployment), the application smoothly falls back to local browser storage. Once reconnected to the internet, all entries are automatically synchronized back to the central Firebase database.
                         </p>
                       </div>
                     </div>
