@@ -1096,6 +1096,8 @@
       const [authLoading, setAuthLoading] = useState(false);
       const [authError, setAuthError] = useState('');
       const [showReferMenu, setShowReferMenu] = useState(false);
+      const [showUserManualModal, setShowUserManualModal] = useState(false);
+      const [manualTab, setManualTab] = useState('getting_started');
 
       // Real-time Firebase Cloud Firestore & Authentication Engine
       useEffect(() => {
@@ -2289,6 +2291,501 @@
       // =======================================================================
       // PAGE 1: HOME PAGE
       // =======================================================================
+      
+      // =======================================================================
+      // MODAL: COMPREHENSIVE IN-APP USER MANUAL & OPERATIONS GUIDE
+      // =======================================================================
+      const renderUserManualModal = () => {
+        if (!showUserManualModal) return null;
+
+        const manualTabs = [
+          { id: 'getting_started', label: '🚀 Getting Started & Roles', icon: '🚀' },
+          { id: 'dashboard_graphs', label: '📊 Dashboard & Graphs', icon: '📊' },
+          { id: 'logging_shifts', label: '📝 Logging Duty Shifts', icon: '📝' },
+          { id: 'scoring_formula', label: '📐 Risk Formula & Scoring', icon: '📐' },
+          { id: 'admin_console', label: '🛡️ Commander Admin Console', icon: '🛡️' },
+          { id: 'cloud_sync', label: '☁️ Cloud Sync & Offline', icon: '☁️' },
+          { id: 'workload_guide', label: '📄 Aircraft Workload Guide', icon: '📄' }
+        ];
+
+        return (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-fadeIn">
+            <div className="glass-panel max-w-5xl w-full max-h-[92vh] flex flex-col bg-[#050B18] border-cyan-500/60 shadow-[0_0_60px_rgba(0,240,255,0.25)] rounded-2xl overflow-hidden font-sans">
+              
+              {/* Header Bar */}
+              <div className="p-4 sm:p-5 border-b border-[#1E3264] bg-gradient-to-r from-[#081024] via-[#0F1C3F] to-[#081024] flex items-center justify-between gap-3 shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-400/60 flex items-center justify-center text-xl shadow-[0_0_15px_rgba(0,240,255,0.3)]">
+                    📘
+                  </div>
+                  <div>
+                    <h2 className="text-base sm:text-lg font-black font-mono tracking-tight text-slate-100 flex items-center gap-2">
+                      <span>AEROFATIGUE SYSTEM USER MANUAL</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-500/40 hidden sm:inline">
+                        OPERATIONS GUIDE v2.0
+                      </span>
+                    </h2>
+                    <p className="text-xs text-slate-400 font-mono">
+                      Complete Guide to How to Use This Application, All Roles, Dashboard Functions & Algorithmic Scoring
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={downloadUserManual}
+                    className="btn-cyber text-xs py-1.5 px-3 font-mono font-bold flex items-center gap-1.5 shadow-md"
+                    title="Download Complete User Manual as 4-Page PDF"
+                  >
+                    <span>⬇</span>
+                    <span className="hidden sm:inline">Download PDF Manual</span>
+                    <span className="sm:hidden">PDF</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowUserManualModal(false)}
+                    className="p-1.5 px-2.5 rounded-xl bg-[#0F1C3F] hover:bg-rose-500/20 text-slate-300 hover:text-rose-300 border border-[#1E3264] hover:border-rose-500/50 transition-colors font-mono font-bold text-sm"
+                    title="Close Manual"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+
+              {/* Navigation Tabs Bar */}
+              <div className="flex items-center gap-1.5 p-2 px-3 border-b border-[#1E3264] bg-[#030712] overflow-x-auto shrink-0 scrollbar-thin">
+                {manualTabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setManualTab(tab.id)}
+                    className={`px-3 py-2 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+                      manualTab === tab.id
+                        ? 'bg-cyan-500/20 text-[#00F0FF] border border-cyan-400/60 shadow-[0_0_15px_rgba(0,240,255,0.2)]'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-[#081024] border border-transparent'
+                    }`}
+                  >
+                    <span>{tab.icon}</span>
+                    <span>{tab.label}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Content Area */}
+              <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 text-slate-300 text-xs sm:text-sm leading-relaxed scrollbar-thin">
+                
+                {/* TAB 1: GETTING STARTED & ROLES */}
+                {manualTab === 'getting_started' && (
+                  <div className="space-y-5 animate-fadeIn">
+                    <div className="p-4 rounded-xl bg-cyan-950/30 border border-cyan-500/40 text-cyan-200">
+                      <h3 className="font-mono font-bold text-sm text-[#00F0FF] mb-1">🎯 System Purpose & Overview</h3>
+                      <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                        AeroFatigue is a specialized Aviation Operational Fatigue Risk Management System (FRMS) engineered for flight squadrons and maintenance units. It tracks duty cycles, sleep debt, circadian rhythms, and workload intensity to give every crew member and commander immediate visibility into operational readiness.
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
+                      <div className="p-4 rounded-xl bg-[#081024] border border-[#1E3264] space-y-2">
+                        <div className="flex items-center gap-2 text-cyan-400 font-bold text-sm">
+                          <span>✈</span> 1. AIR CREW DIVISION
+                        </div>
+                        <p className="text-slate-400 font-sans text-xs">
+                          Comprises Pilots, Navigators, Tactical Systems Operators, and Flight Engineers. Focuses on sortie flight hours, instrument flight (IFR) complexity, Window of Circadian Low (WOCL) night flying, and enforces mandatory in-flight relief rotations (after 7.5h flight time).
+                        </p>
+                      </div>
+
+                      <div className="p-4 rounded-xl bg-[#081024] border border-[#1E3264] space-y-2">
+                        <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
+                          <span>🔧</span> 2. GROUND CREW DIVISION
+                        </div>
+                        <p className="text-slate-400 font-sans text-xs">
+                          Comprises Line Maintenance Technicians, Defect Rectification Crews, Avionics Teams, and AMCO Controllers. Monitors hands-on aircraft defect troubleshooting, hourly/calendar servicing, and unit duty nominations (Line Chief, Duty Chief).
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-[#081024] border border-[#1E3264] space-y-3 font-mono text-xs">
+                      <h4 className="text-slate-200 font-bold text-xs uppercase tracking-wider flex items-center gap-2">
+                        <span>🔑</span> How to Access Individual Crew Dashboards (PIN Access)
+                      </h4>
+                      <p className="text-slate-400 font-sans text-xs">
+                        Every crew member has an individual profile protected by a <strong>4-digit PIN</strong> (Default: <code className="text-cyan-300 font-mono bg-cyan-950/80 px-1.5 py-0.5 rounded border border-cyan-500/30">1234</code>). From the Operational Portal, click on any personnel card and enter their PIN to unlock their personal dashboard.
+                      </p>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-[#081024] border border-[#1E3264] space-y-3 font-mono text-xs">
+                      <h4 className="text-slate-200 font-bold text-xs uppercase tracking-wider flex items-center gap-2">
+                        <span>➕</span> Adding & Managing Personnel
+                      </h4>
+                      <ol className="list-decimal list-inside space-y-1.5 text-slate-300 font-sans text-xs">
+                        <li>In the Operational Portal, click <strong className="text-cyan-400">+ ADD PERSON</strong>.</li>
+                        <li>Fill in the crew member's Name, Section (Air Crew or Ground Crew), Role Title, and Squadron Unit.</li>
+                        <li>Upload a photo avatar (the system automatically compresses it for instant cloud sync).</li>
+                        <li>Set a personal 4-digit PIN and click <strong className="text-cyan-400">Add to Squadron Roster</strong>.</li>
+                      </ol>
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 2: DASHBOARD & GRAPHS */}
+                {manualTab === 'dashboard_graphs' && (
+                  <div className="space-y-5 animate-fadeIn">
+                    <div className="p-4 rounded-xl bg-[#081024] border border-[#1E3264] space-y-3">
+                      <h3 className="font-mono font-bold text-sm text-[#00F0FF] flex items-center gap-2">
+                        <span>📊</span> Navigating the Individual Fatigue Dashboard
+                      </h3>
+                      <p className="text-xs text-slate-300 font-sans leading-relaxed">
+                        When you open an individual crew member's dashboard, you have four primary tabs:
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
+                      <div className="p-4 rounded-xl bg-[#030712] border border-[#1E3264] space-y-2">
+                        <div className="text-cyan-300 font-bold">1. Overview (Circular Fatigue Gauge)</div>
+                        <p className="text-slate-400 font-sans text-xs">
+                          Displays the real-time composite Fatigue Score (0 to 100), current Risk Band (<span className="text-emerald-400 font-bold">LOW</span>, <span className="text-amber-400 font-bold">MODERATE</span>, <span className="text-orange-400 font-bold">HIGH</span>, <span className="text-rose-400 font-bold">CRITICAL</span>), and points breakdown across Sleep, Duty Duration, Circadian Window, Consecutive Days, and Workload Intensity.
+                        </p>
+                      </div>
+
+                      <div className="p-4 rounded-xl bg-[#030712] border border-[#1E3264] space-y-2">
+                        <div className="text-cyan-300 font-bold">2. 📈 Interactive Cartesian Graph</div>
+                        <p className="text-slate-400 font-sans text-xs">
+                          Renders a continuous SVG Cartesian time-series graph of fatigue score progression across historical shifts. Hover over any point on the curve to inspect duty start/end times, shift duration, sleep hours, and workload classification.
+                        </p>
+                      </div>
+
+                      <div className="p-4 rounded-xl bg-[#030712] border border-[#1E3264] space-y-2">
+                        <div className="text-cyan-300 font-bold">3. Duty History Table</div>
+                        <p className="text-slate-400 font-sans text-xs">
+                          A complete chronological audit log of all recorded shifts. Each entry displays date, duty start/end times, duration, shift type, workload factor, sleep duration, and operational notes, with in-place <strong className="text-amber-300">Edit (✏️)</strong> and <strong className="text-rose-300">Delete (🗑️)</strong> controls.
+                        </p>
+                      </div>
+
+                      <div className="p-4 rounded-xl bg-[#030712] border border-[#1E3264] space-y-2">
+                        <div className="text-cyan-300 font-bold">4. + Record Entry Form</div>
+                        <p className="text-slate-400 font-sans text-xs">
+                          The structured check-in form used to record daily shifts, automatically synchronized with live system time, auto-calculated consecutive days, and inline reference manuals.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 3: LOGGING SHIFTS */}
+                {manualTab === 'logging_shifts' && (
+                  <div className="space-y-5 animate-fadeIn">
+                    <div className="p-4 rounded-xl bg-cyan-950/30 border border-cyan-500/40 text-cyan-200">
+                      <h3 className="font-mono font-bold text-sm text-[#00F0FF] mb-1">📝 Step-by-Step Shift Check-In Guide</h3>
+                      <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                        How to record a new duty entry for a crew member:
+                      </p>
+                    </div>
+
+                    <div className="space-y-3 font-mono text-xs">
+                      <div className="p-3.5 rounded-xl bg-[#081024] border border-[#1E3264] flex items-start gap-3">
+                        <span className="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold shrink-0">1</span>
+                        <div>
+                          <strong className="text-slate-200 block text-xs">Date & Time of Record</strong>
+                          <p className="text-slate-400 font-sans text-xs mt-0.5">
+                            Automatically synchronized with current system time. If logging a past shift, adjust the date and time accordingly.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="p-3.5 rounded-xl bg-[#081024] border border-[#1E3264] flex items-start gap-3">
+                        <span className="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold shrink-0">2</span>
+                        <div>
+                          <strong className="text-slate-200 block text-xs">Duty Cycle Start & End Times</strong>
+                          <p className="text-slate-400 font-sans text-xs mt-0.5">
+                            Set your shift start and end times (e.g. 08:00 to 16:30). Total duty duration (hours) is computed dynamically.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="p-3.5 rounded-xl bg-[#081024] border border-[#1E3264] flex items-start gap-3">
+                        <span className="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold shrink-0">3</span>
+                        <div>
+                          <strong className="text-slate-200 block text-xs">Shift Category (Day vs. Night)</strong>
+                          <p className="text-slate-400 font-sans text-xs mt-0.5">
+                            Select <strong>☀️ Day Shift</strong> (06:00 - 22:00, 0 pts) or <strong>🌙 Night Duty</strong> (22:00 - 06:00 WOCL window, +20 circadian pts).
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="p-3.5 rounded-xl bg-[#081024] border border-[#1E3264] flex items-start gap-3">
+                        <span className="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold shrink-0">4</span>
+                        <div>
+                          <strong className="text-slate-200 block text-xs">Consecutive Duty Days</strong>
+                          <p className="text-slate-400 font-sans text-xs mt-0.5">
+                            The system automatically calculates consecutive working days from previous shift logs. You can also adjust the slider manually (1 to 14 days).
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="p-3.5 rounded-xl bg-[#081024] border border-[#1E3264] flex items-start gap-3">
+                        <span className="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold shrink-0">5</span>
+                        <div>
+                          <strong className="text-slate-200 block text-xs">Workload Intensity Classification</strong>
+                          <p className="text-slate-400 font-sans text-xs mt-0.5">
+                            Choose <strong>Low (0 pts)</strong>, <strong>Medium (+5 pts)</strong>, or <strong>High (+10 pts)</strong> according to the Aircraft Workload Manual. Click the inline <strong className="text-cyan-400">📖 Manual PDF</strong> link if you need a quick classification reference.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="p-3.5 rounded-xl bg-[#081024] border border-[#1E3264] flex items-start gap-3">
+                        <span className="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold shrink-0">6</span>
+                        <div>
+                          <strong className="text-slate-200 block text-xs">Prior Sleep Duration & Remarks</strong>
+                          <p className="text-slate-400 font-sans text-xs mt-0.5">
+                            Set the number of sleep hours obtained in the 24 hours prior to duty (0.5h step slider). Add optional notes like defect IDs or sortie callsigns, then click <strong className="text-cyan-400">Save Fatigue Entry</strong>.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 4: SCORING FORMULA */}
+                {manualTab === 'scoring_formula' && (
+                  <div className="space-y-5 animate-fadeIn">
+                    <div className="p-4 rounded-xl bg-[#081024] border border-[#1E3264] space-y-2">
+                      <h3 className="font-mono font-bold text-sm text-[#00F0FF] flex items-center gap-2">
+                        <span>📐</span> The Mathematical 5-Factor Fatigue Scoring Model
+                      </h3>
+                      <div className="p-3 rounded-lg bg-[#030712] border border-cyan-500/30 text-cyan-300 font-mono text-xs">
+                        Score = Sleep Penalty (0-30) + Duty Duration (0-25) + Shift Circadian (0/20) + Consec Days (0-10) + Workload (0-10)
+                      </div>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left font-mono text-xs border border-[#1E3264]">
+                        <thead className="bg-[#030712] text-slate-300">
+                          <tr>
+                            <th className="p-2.5 border-b border-[#1E3264]">Factor</th>
+                            <th className="p-2.5 border-b border-[#1E3264]">Parameter Range</th>
+                            <th className="p-2.5 border-b border-[#1E3264]">Points</th>
+                            <th className="p-2.5 border-b border-[#1E3264]">Operational Rationale</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#1E3264]/60 text-slate-400 font-sans">
+                          <tr>
+                            <td className="p-2.5 font-bold text-rose-300 font-mono">1. Sleep Debt</td>
+                            <td className="p-2.5 font-mono">≥8.0h | 7.0-7.9h | 6.0-6.9h | 5.0-5.9h | &lt;5.0h</td>
+                            <td className="p-2.5 font-mono text-cyan-300 font-bold">0 | +5 | +12 | +20 | +30</td>
+                            <td className="p-2.5">Non-linear exponential curve for acute cognitive deprivation.</td>
+                          </tr>
+                          <tr>
+                            <td className="p-2.5 font-bold text-amber-300 font-mono">2. Duty Duration</td>
+                            <td className="p-2.5 font-mono">≤8.0h | 8.1-10h | 10.1-12h | 12.1-14h | &gt;14h</td>
+                            <td className="p-2.5 font-mono text-cyan-300 font-bold">0 | +5 | +12 | +18 | +25</td>
+                            <td className="p-2.5">Progressive fatigue accumulation during extended shifts.</td>
+                          </tr>
+                          <tr>
+                            <td className="p-2.5 font-bold text-cyan-300 font-mono">3. Circadian Shift</td>
+                            <td className="p-2.5 font-mono">Day (06:00-22:00) | Night (22:00-06:00)</td>
+                            <td className="p-2.5 font-mono text-cyan-300 font-bold">0 | +20</td>
+                            <td className="p-2.5">Window of Circadian Low (WOCL) penalty.</td>
+                          </tr>
+                          <tr>
+                            <td className="p-2.5 font-bold text-purple-300 font-mono">4. Consecutive Days</td>
+                            <td className="p-2.5 font-mono">1-3 Days | 4 Days | 5 Days | 6 Days | 7+ Days</td>
+                            <td className="p-2.5 font-mono text-cyan-300 font-bold">0 | +3 | +6 | +8 | +10</td>
+                            <td className="p-2.5">Cumulative chronic fatigue accumulation without rest days.</td>
+                          </tr>
+                          <tr>
+                            <td className="p-2.5 font-bold text-emerald-300 font-mono">5. Workload Intensity</td>
+                            <td className="p-2.5 font-mono">Low (Admin) | Medium (Servicing) | High (Rectification)</td>
+                            <td className="p-2.5 font-mono text-cyan-300 font-bold">0 | +5 | +10</td>
+                            <td className="p-2.5">Governed by squadron maintenance and sortie classification.</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="space-y-2.5 font-mono text-xs">
+                      <h4 className="text-slate-200 font-bold uppercase tracking-wider">Four Operational Risk Bands</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/50 text-emerald-200">
+                          <strong className="text-emerald-400 block">🟢 LOW RISK (0 to 24 pts)</strong>
+                          <span className="text-slate-300 font-sans text-xs">Fit for Duty. Standard shift rotation authorized. Unrestricted flight/maintenance clearance.</span>
+                        </div>
+                        <div className="p-3 rounded-xl bg-amber-950/40 border border-amber-500/50 text-amber-200">
+                          <strong className="text-amber-400 block">🟡 MODERATE RISK (25 to 49 pts)</strong>
+                          <span className="text-slate-300 font-sans text-xs">Active monitoring. Mandatory 15-minute hydration and rest break every 4 hours.</span>
+                        </div>
+                        <div className="p-3 rounded-xl bg-orange-950/40 border border-orange-500/50 text-orange-200">
+                          <strong className="text-orange-400 block">🟠 HIGH RISK (50 to 74 pts)</strong>
+                          <span className="text-slate-300 font-sans text-xs">Supervisor approval required. Re-evaluate consecutive days. Assign relief co-pilot / safety partner.</span>
+                        </div>
+                        <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-500/50 text-rose-200">
+                          <strong className="text-rose-400 block">🔴 CRITICAL RISK (75 to 100 pts)</strong>
+                          <span className="text-slate-300 font-sans text-xs">MANDATORY GROUNDING & STAND DOWN. Minimum 10 hours uninterrupted restorative rest.</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 5: ADMIN CONSOLE */}
+                {manualTab === 'admin_console' && (
+                  <div className="space-y-5 animate-fadeIn">
+                    <div className="p-4 rounded-xl bg-[#081024] border border-[#1E3264] space-y-2">
+                      <h3 className="font-mono font-bold text-sm text-[#00F0FF] flex items-center gap-2">
+                        <span>🛡️</span> Commander / Admin Master Console
+                      </h3>
+                      <p className="text-xs text-slate-300 font-sans leading-relaxed">
+                        The Admin Console provides centralized command and supervisory oversight across all squadrons.
+                      </p>
+                    </div>
+
+                    <div className="space-y-3 font-mono text-xs">
+                      <div className="p-3.5 rounded-xl bg-[#030712] border border-[#1E3264]">
+                        <strong className="text-cyan-300 block">1. Logging into Admin Mode</strong>
+                        <p className="text-slate-400 font-sans text-xs mt-1">
+                          Click <strong className="text-purple-400">🛡️ ADMIN COMMAND</strong> in the top header. Enter Admin ID (Default: <code className="text-cyan-300">admin</code>) and Admin Password (Default: <code className="text-cyan-300">admin123</code>).
+                        </p>
+                      </div>
+
+                      <div className="p-3.5 rounded-xl bg-[#030712] border border-[#1E3264]">
+                        <strong className="text-cyan-300 block">2. Fleet Overview & High-Risk Alerts</strong>
+                        <p className="text-slate-400 font-sans text-xs mt-1">
+                          View total registered personnel, section breakdowns, average fleet fatigue scores, and immediate high-risk alerts flagged across all squadrons.
+                        </p>
+                      </div>
+
+                      <div className="p-3.5 rounded-xl bg-[#030712] border border-[#1E3264]">
+                        <strong className="text-cyan-300 block">3. Master Duty History Audit</strong>
+                        <p className="text-slate-400 font-sans text-xs mt-1">
+                          Inspect cross-squadron duty logs with date filtering, risk level sorting, and export readiness.
+                        </p>
+                      </div>
+
+                      <div className="p-3.5 rounded-xl bg-[#030712] border border-[#1E3264]">
+                        <strong className="text-cyan-300 block">4. Credential & Security Controls</strong>
+                        <p className="text-slate-400 font-sans text-xs mt-1">
+                          Change Admin Password, reset crew member PINs, manage Firebase cloud database connections, and audit active users.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 6: CLOUD SYNC & OFFLINE */}
+                {manualTab === 'cloud_sync' && (
+                  <div className="space-y-5 animate-fadeIn">
+                    <div className="p-4 rounded-xl bg-cyan-950/30 border border-cyan-500/40 text-cyan-200">
+                      <h3 className="font-mono font-bold text-sm text-[#00F0FF] mb-1">☁️ Real-Time Cloud Persistence & Offline Mode</h3>
+                      <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                        AeroFatigue features bidirectional Firebase Cloud Firestore synchronization and resilient local offline storage.
+                      </p>
+                    </div>
+
+                    <div className="space-y-3 font-mono text-xs">
+                      <div className="p-3.5 rounded-xl bg-[#081024] border border-[#1E3264]">
+                        <strong className="text-cyan-300 block">🔥 Setting Up Firebase Cloud Sync</strong>
+                        <ol className="list-decimal list-inside space-y-1 text-slate-400 font-sans text-xs mt-1">
+                          <li>Click <strong className="text-amber-300">🔥 Cloud Sync</strong> in the top header.</li>
+                          <li>Paste your Firebase Web App configuration snippet or API key from the Firebase Console (<code className="text-cyan-300">aerofatigue-portal</code>).</li>
+                          <li>Click <strong>Save & Connect Cloud</strong>. All records immediately sync across devices.</li>
+                        </ol>
+                      </div>
+
+                      <div className="p-3.5 rounded-xl bg-[#081024] border border-[#1E3264]">
+                        <strong className="text-cyan-300 block">💾 Zero-Latency Offline Mode</strong>
+                        <p className="text-slate-400 font-sans text-xs mt-1">
+                          Even if you are disconnected from the network or deployed in remote maritime environments, the application continues to operate smoothly using browser cache. When reconnected, data syncs automatically with the server.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 7: WORKLOAD GUIDE */}
+                {manualTab === 'workload_guide' && (
+                  <div className="space-y-5 animate-fadeIn">
+                    <div className="p-4 rounded-xl bg-[#081024] border border-[#1E3264] space-y-2">
+                      <h3 className="font-mono font-bold text-sm text-[#00F0FF] flex items-center justify-between">
+                        <span>📄 Aircraft Workload Classification Guide</span>
+                        <button
+                          type="button"
+                          onClick={downloadWorkIntensityManual}
+                          className="btn-glass text-[11px] py-1 px-2.5 text-cyan-300 border-cyan-500/40"
+                        >
+                          ⬇ Download 3-Page PDF
+                        </button>
+                      </h3>
+                      <p className="text-xs text-slate-300 font-sans leading-relaxed">
+                        Squadron work classification guide for categorizing daily maintenance and flight duties:
+                      </p>
+                    </div>
+
+                    <div className="space-y-3 font-mono text-xs">
+                      <div className="p-3.5 rounded-xl bg-rose-950/30 border border-rose-500/40">
+                        <strong className="text-rose-400 block text-sm">🔴 1. HIGH-INTENSITY WORK (+10 Points)</strong>
+                        <ul className="list-disc list-inside space-y-1 text-slate-300 font-sans text-xs mt-1">
+                          <li><strong>Defect Identification & Rectification</strong>: Troubleshooting, isolation, component replacement.</li>
+                          <li><strong>Routine Scheduled Servicing</strong>: Hourly-based or calendar-based servicing.</li>
+                          <li><strong>Quick Rule</strong>: Direct hands-on technical work on the aircraft = High-Intensity.</li>
+                        </ul>
+                      </div>
+
+                      <div className="p-3.5 rounded-xl bg-amber-950/30 border border-amber-500/40">
+                        <strong className="text-amber-400 block text-sm">🟡 2. MODERATE-RISK WORK (+5 Points)</strong>
+                        <ul className="list-disc list-inside space-y-1 text-slate-300 font-sans text-xs mt-1">
+                          <li><strong>Flight Servicing</strong>: AFS, BFS, TRS, BTWS aircraft preparations.</li>
+                          <li><strong>Mission Support</strong>: TC installation, cargo operations, sortie handling.</li>
+                          <li><strong>AMCO & Staff Office</strong>: Maintenance tracking, records, administrative coordination.</li>
+                        </ul>
+                      </div>
+
+                      <div className="p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-500/40">
+                        <strong className="text-emerald-400 block text-sm">🟢 3. LOW-RISK WORK (0 Points)</strong>
+                        <ul className="list-disc list-inside space-y-1 text-slate-300 font-sans text-xs mt-1">
+                          <li><strong>Aircraft Documentation</strong>: Job cards, form filling, record updates.</li>
+                          <li><strong>Unit Nominations</strong>: Parade, cleanship, Line Chief, Duty Chief assignments.</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+              </div>
+
+              {/* Footer */}
+              <div className="p-4 border-t border-[#1E3264] bg-[#030712] flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0 font-mono text-xs">
+                <div className="flex items-center gap-3">
+                  <span className="text-slate-400">Need offline documentation?</span>
+                  <button
+                    type="button"
+                    onClick={downloadUserManual}
+                    className="text-cyan-400 hover:text-cyan-300 underline font-bold"
+                  >
+                    📘 Download User Manual (4-Page PDF)
+                  </button>
+                  <span className="text-slate-600">•</span>
+                  <button
+                    type="button"
+                    onClick={downloadWorkIntensityManual}
+                    className="text-cyan-400 hover:text-cyan-300 underline font-bold"
+                  >
+                    📄 Aircraft Workload Manual (3-Page PDF)
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowUserManualModal(false)}
+                  className="btn-glass py-1.5 px-4 font-bold text-xs"
+                >
+                  Close Guide
+                </button>
+              </div>
+
+            </div>
+          </div>
+        );
+      };
+
       if (currentView === 'home') {
         return (
           <div className="min-h-screen flex flex-col justify-between hero-bg-container relative">
@@ -2374,6 +2871,18 @@
                   </button>
                 )}
 
+                {/* Dedicated User Manual Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowUserManualModal(true)}
+                  className="px-3 py-1.5 rounded-xl border border-cyan-500/50 bg-[#0B132B] hover:bg-[#162550] text-[#00F0FF] text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-md hover:shadow-[0_0_15px_rgba(0,240,255,0.3)]"
+                  title="Open Interactive System User Manual (How to Use Application)"
+                >
+                  <span>📘</span>
+                  <span className="hidden sm:inline">User Manual</span>
+                  <span className="sm:hidden">Manual</span>
+                </button>
+
                 {/* Refer Dropdown Menu */}
                 <div className="relative">
                   <button
@@ -2387,24 +2896,69 @@
                     <span className="text-[10px]">▾</span>
                   </button>
                   {showReferMenu && (
-                    <div className="absolute right-0 mt-2 w-64 rounded-xl bg-[#081024] border border-cyan-500/50 shadow-2xl p-2 z-50">
-                      <div className="text-[10px] font-mono uppercase text-slate-400 px-2 py-1 border-b border-[#1E3264]">
-                        Reference Manuals
+                    <div className="absolute right-0 mt-2 w-72 rounded-xl bg-[#081024] border border-cyan-500/50 shadow-2xl p-2.5 z-50">
+                      <div className="text-[10px] font-mono uppercase text-cyan-400 font-bold px-2 py-1 border-b border-[#1E3264] flex items-center justify-between">
+                        <span>📖 Reference Documentation</span>
+                        <span className="text-[9px] bg-cyan-950 px-1.5 py-0.5 rounded border border-cyan-500/30 text-cyan-300">PDF & Guides</span>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setShowReferMenu(false);
-                          downloadWorkIntensityManual();
-                        }}
-                        className="w-full text-left px-2.5 py-2 mt-1 rounded-lg text-xs font-mono font-bold text-slate-200 hover:bg-cyan-500/20 hover:text-cyan-300 flex items-center justify-between group transition-colors"
-                      >
-                        <div className="flex items-center gap-2">
-                          <span>📄</span>
-                          <span>Work Intensity Manual</span>
-                        </div>
-                        <span className="text-[10px] text-cyan-400 group-hover:translate-y-0.5 transition-transform">⬇ PDF</span>
-                      </button>
+                      <div className="space-y-1.5 mt-1.5">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowReferMenu(false);
+                            setShowUserManualModal(true);
+                          }}
+                          className="w-full text-left p-2 rounded-lg text-xs font-mono font-bold text-slate-200 hover:bg-cyan-500/20 hover:text-cyan-300 border border-transparent hover:border-cyan-500/40 flex items-center justify-between group transition-all"
+                          title="Open Interactive User Manual Guide"
+                        >
+                          <div className="flex items-start gap-2">
+                            <span className="text-base">📘</span>
+                            <div>
+                              <div className="text-slate-100 group-hover:text-cyan-300">Complete User Manual</div>
+                              <div className="text-[10px] text-slate-400 font-normal font-sans">How to use application & all features</div>
+                            </div>
+                          </div>
+                          <span className="text-[10px] text-cyan-400 font-mono group-hover:translate-x-0.5 transition-transform shrink-0">VIEW ↗</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowReferMenu(false);
+                            downloadUserManual();
+                          }}
+                          className="w-full text-left p-2 rounded-lg text-xs font-mono font-bold text-slate-200 hover:bg-cyan-500/20 hover:text-cyan-300 border border-transparent hover:border-cyan-500/40 flex items-center justify-between group transition-all"
+                          title="Download AeroFatigue Complete User Manual as PDF"
+                        >
+                          <div className="flex items-start gap-2">
+                            <span className="text-base">📥</span>
+                            <div>
+                              <div className="text-slate-100 group-hover:text-cyan-300">Download User Manual PDF</div>
+                              <div className="text-[10px] text-slate-400 font-normal font-sans">4-Page comprehensive manual</div>
+                            </div>
+                          </div>
+                          <span className="text-[10px] text-cyan-400 font-mono group-hover:translate-y-0.5 transition-transform shrink-0">⬇ PDF</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowReferMenu(false);
+                            downloadWorkIntensityManual();
+                          }}
+                          className="w-full text-left p-2 rounded-lg text-xs font-mono font-bold text-slate-200 hover:bg-cyan-500/20 hover:text-cyan-300 border border-transparent hover:border-cyan-500/40 flex items-center justify-between group transition-all"
+                          title="Download Aircraft Workload Manual as PDF"
+                        >
+                          <div className="flex items-start gap-2">
+                            <span className="text-base">📄</span>
+                            <div>
+                              <div className="text-slate-100 group-hover:text-cyan-300">Aircraft Workload Manual</div>
+                              <div className="text-[10px] text-slate-400 font-normal font-sans">Squadron work classification guide</div>
+                            </div>
+                          </div>
+                          <span className="text-[10px] text-cyan-400 font-mono group-hover:translate-y-0.5 transition-transform shrink-0">⬇ PDF</span>
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -2450,6 +3004,7 @@
             {/* MODALS ON HOME PAGE */}
             {renderCloudModal()}
             {renderAuthModal()}
+            {renderUserManualModal()}
           </div>
         );
       }
@@ -2572,6 +3127,18 @@
                   </button>
                 )}
 
+                {/* Dedicated User Manual Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowUserManualModal(true)}
+                  className="px-3 py-1.5 rounded-xl border border-cyan-500/50 bg-[#0B132B] hover:bg-[#162550] text-[#00F0FF] text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-md hover:shadow-[0_0_15px_rgba(0,240,255,0.3)]"
+                  title="Open Interactive System User Manual (How to Use Application)"
+                >
+                  <span>📘</span>
+                  <span className="hidden sm:inline">User Manual</span>
+                  <span className="sm:hidden">Manual</span>
+                </button>
+
                 {/* Refer Dropdown Menu */}
                 <div className="relative">
                   <button
@@ -2585,24 +3152,69 @@
                     <span className="text-[10px]">▾</span>
                   </button>
                   {showReferMenu && (
-                    <div className="absolute right-0 mt-2 w-64 rounded-xl bg-[#081024] border border-cyan-500/50 shadow-2xl p-2 z-50">
-                      <div className="text-[10px] font-mono uppercase text-slate-400 px-2 py-1 border-b border-[#1E3264]">
-                        Reference Manuals
+                    <div className="absolute right-0 mt-2 w-72 rounded-xl bg-[#081024] border border-cyan-500/50 shadow-2xl p-2.5 z-50">
+                      <div className="text-[10px] font-mono uppercase text-cyan-400 font-bold px-2 py-1 border-b border-[#1E3264] flex items-center justify-between">
+                        <span>📖 Reference Documentation</span>
+                        <span className="text-[9px] bg-cyan-950 px-1.5 py-0.5 rounded border border-cyan-500/30 text-cyan-300">PDF & Guides</span>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setShowReferMenu(false);
-                          downloadWorkIntensityManual();
-                        }}
-                        className="w-full text-left px-2.5 py-2 mt-1 rounded-lg text-xs font-mono font-bold text-slate-200 hover:bg-cyan-500/20 hover:text-cyan-300 flex items-center justify-between group transition-colors"
-                      >
-                        <div className="flex items-center gap-2">
-                          <span>📄</span>
-                          <span>Work Intensity Manual</span>
-                        </div>
-                        <span className="text-[10px] text-cyan-400 group-hover:translate-y-0.5 transition-transform">⬇ PDF</span>
-                      </button>
+                      <div className="space-y-1.5 mt-1.5">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowReferMenu(false);
+                            setShowUserManualModal(true);
+                          }}
+                          className="w-full text-left p-2 rounded-lg text-xs font-mono font-bold text-slate-200 hover:bg-cyan-500/20 hover:text-cyan-300 border border-transparent hover:border-cyan-500/40 flex items-center justify-between group transition-all"
+                          title="Open Interactive User Manual Guide"
+                        >
+                          <div className="flex items-start gap-2">
+                            <span className="text-base">📘</span>
+                            <div>
+                              <div className="text-slate-100 group-hover:text-cyan-300">Complete User Manual</div>
+                              <div className="text-[10px] text-slate-400 font-normal font-sans">How to use application & all features</div>
+                            </div>
+                          </div>
+                          <span className="text-[10px] text-cyan-400 font-mono group-hover:translate-x-0.5 transition-transform shrink-0">VIEW ↗</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowReferMenu(false);
+                            downloadUserManual();
+                          }}
+                          className="w-full text-left p-2 rounded-lg text-xs font-mono font-bold text-slate-200 hover:bg-cyan-500/20 hover:text-cyan-300 border border-transparent hover:border-cyan-500/40 flex items-center justify-between group transition-all"
+                          title="Download AeroFatigue Complete User Manual as PDF"
+                        >
+                          <div className="flex items-start gap-2">
+                            <span className="text-base">📥</span>
+                            <div>
+                              <div className="text-slate-100 group-hover:text-cyan-300">Download User Manual PDF</div>
+                              <div className="text-[10px] text-slate-400 font-normal font-sans">4-Page comprehensive manual</div>
+                            </div>
+                          </div>
+                          <span className="text-[10px] text-cyan-400 font-mono group-hover:translate-y-0.5 transition-transform shrink-0">⬇ PDF</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowReferMenu(false);
+                            downloadWorkIntensityManual();
+                          }}
+                          className="w-full text-left p-2 rounded-lg text-xs font-mono font-bold text-slate-200 hover:bg-cyan-500/20 hover:text-cyan-300 border border-transparent hover:border-cyan-500/40 flex items-center justify-between group transition-all"
+                          title="Download Aircraft Workload Manual as PDF"
+                        >
+                          <div className="flex items-start gap-2">
+                            <span className="text-base">📄</span>
+                            <div>
+                              <div className="text-slate-100 group-hover:text-cyan-300">Aircraft Workload Manual</div>
+                              <div className="text-[10px] text-slate-400 font-normal font-sans">Squadron work classification guide</div>
+                            </div>
+                          </div>
+                          <span className="text-[10px] text-cyan-400 font-mono group-hover:translate-y-0.5 transition-transform shrink-0">⬇ PDF</span>
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -4684,6 +5296,7 @@
             {/* ========================================================================= */}
             {renderCloudModal()}
             {renderAuthModal()}
+            {renderUserManualModal()}
 
           </main>
 
