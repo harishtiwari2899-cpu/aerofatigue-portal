@@ -2,5 +2,5 @@ node_modules/
 .DS_Store
 Thumbs.db
 *.log
-* - Copy.html
-* - Copy (2).html
+* - Copy*.html
+* - final.html
