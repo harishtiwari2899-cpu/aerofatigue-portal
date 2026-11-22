@@ -4,6 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AeroFatigue – Crew Fatigue Management System</title>
+  <meta name="theme-color" content="#030712">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AeroFatigue">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+  </script>
   <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1202,6 +1217,77 @@
       const [showReferMenu, setShowReferMenu] = useState(false);
       const [showUserManualModal, setShowUserManualModal] = useState(false);
       const [manualTab, setManualTab] = useState('getting_started');
+
+      // Mobile App (base.apk) & PWA Install Prompt State
+      const [autoPromptApk, setAutoPromptApk] = useState(() => {
+        try {
+          return localStorage.getItem("aerofatigue_auto_prompt_apk") !== 'false';
+        } catch (e) {
+          return true;
+        }
+      });
+      const [showAppInstallModal, setShowAppInstallModal] = useState(() => {
+        try {
+          // If autoPromptApk is enabled (default true), show prompt whenever app is opened
+          return localStorage.getItem("aerofatigue_auto_prompt_apk") !== 'false';
+        } catch (e) {
+          return true;
+        }
+      });
+      const [deferredInstallPrompt, setDeferredInstallPrompt] = useState(null);
+      const [isApkDownloading, setIsApkDownloading] = useState(false);
+
+      useEffect(() => {
+        const handleBeforeInstall = (e) => {
+          e.preventDefault();
+          setDeferredInstallPrompt(e);
+        };
+        window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+        return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+      }, []);
+
+      const handleDownloadBaseApk = () => {
+        try {
+          const a = document.createElement('a');
+          a.href = 'assets/base.apk';
+          a.download = 'base.apk';
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => {
+            document.body.removeChild(a);
+          }, 400);
+          setIsApkDownloading(true);
+          triggerNotice("📲 Downloading base.apk... Tap the downloaded file in your notification bar to auto-install!", "success");
+        } catch (err) {
+          console.error("APK download error:", err);
+          window.location.href = 'assets/base.apk';
+        }
+      };
+
+      const handleNativePwaInstall = async () => {
+        if (deferredInstallPrompt) {
+          try {
+            deferredInstallPrompt.prompt();
+            const { outcome } = await deferredInstallPrompt.userChoice;
+            if (outcome === 'accepted') {
+              triggerNotice("🎉 AeroFatigue App installed to your home screen!", "success");
+              setShowAppInstallModal(false);
+            }
+            setDeferredInstallPrompt(null);
+          } catch (e) {
+            triggerNotice("💡 Tap your browser menu (⋮) and select 'Add to Home Screen' or 'Install App'.", "info");
+          }
+        } else {
+          triggerNotice("💡 Tap your browser menu (⋮ or ⎋) and select 'Add to Home Screen' to install instantly.", "info");
+        }
+      };
+
+      const handleToggleAutoPromptApk = (enabled) => {
+        setAutoPromptApk(enabled);
+        try {
+          localStorage.setItem("aerofatigue_auto_prompt_apk", enabled ? 'true' : 'false');
+        } catch (e) {}
+      };
 
       // Real-time Firebase Cloud Firestore & Authentication Engine
       useEffect(() => {
@@ -3170,6 +3256,17 @@
                   >
                     📄 Aircraft Workload Manual (3-Page PDF)
                   </button>
+                  <span className="text-slate-600">•</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowUserManualModal(false);
+                      setShowAppInstallModal(true);
+                    }}
+                    className="text-cyan-400 hover:text-cyan-300 underline font-bold"
+                  >
+                    📱 Mobile App (base.apk)
+                  </button>
                 </div>
                 <button
                   type="button"
@@ -3177,6 +3274,127 @@
                   className="btn-glass py-1.5 px-4 font-bold text-xs"
                 >
                   Close Guide
+                </button>
+              </div>
+
+            </div>
+          </div>
+        );
+      };
+
+      // =========================================================================
+      // MODAL: MOBILE APP INSTALL & BASE.APK AUTO-INSTALL PROMPT
+      // =========================================================================
+      const renderAppInstallModal = () => {
+        if (!showAppInstallModal) return null;
+        return (
+          <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-fadeIn">
+            <div className="glass-panel p-6 sm:p-7 max-w-lg w-full space-y-5 bg-[#081024] border-cyan-500/60 shadow-[0_0_50px_rgba(0,240,255,0.25)] my-8 relative">
+              
+              {/* Header */}
+              <div className="flex items-start justify-between border-b border-[#1E3264] pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-cyan-950/80 border border-cyan-400/50 flex items-center justify-center text-2xl shadow-[0_0_15px_rgba(0,240,255,0.4)] shrink-0">
+                    📱
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-base sm:text-lg font-mono font-bold uppercase text-slate-100">
+                        Install AeroFatigue App
+                      </h3>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-500/50 font-bold uppercase">
+                        base.apk
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-400 font-sans mt-0.5">
+                      Standalone Android APK &amp; Instant Home Screen Installation
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowAppInstallModal(false)}
+                  className="w-8 h-8 rounded-lg bg-[#0B132B] hover:bg-[#162550] border border-[#1E3264] text-slate-400 hover:text-white flex items-center justify-center text-sm font-mono transition-all"
+                  title="Close and continue in browser"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Main Feature Highlight */}
+              <div className="p-3.5 rounded-xl bg-gradient-to-r from-cyan-950/40 via-[#0B132B] to-blue-950/40 border border-cyan-500/30 space-y-2 text-xs">
+                <div className="font-bold text-cyan-300 font-mono flex items-center gap-2">
+                  <span>⚡</span> Experience AeroFatigue as a Native Mobile App
+                </div>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11.5px] text-slate-300 font-sans">
+                  <li className="flex items-center gap-1.5">
+                    <span className="text-cyan-400 font-bold">✓</span> Fullscreen cockpit view
+                  </li>
+                  <li className="flex items-center gap-1.5">
+                    <span className="text-cyan-400 font-bold">✓</span> 100% offline duty logging
+                  </li>
+                  <li className="flex items-center gap-1.5">
+                    <span className="text-cyan-400 font-bold">✓</span> Fast one-tap home screen access
+                  </li>
+                  <li className="flex items-center gap-1.5">
+                    <span className="text-cyan-400 font-bold">✓</span> Auto-syncs with server &amp; cloud
+                  </li>
+                </ul>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-3">
+                {/* 1. Download base.apk Button */}
+                <button
+                  type="button"
+                  onClick={handleDownloadBaseApk}
+                  className="w-full btn-cyber py-3.5 px-4 text-xs sm:text-sm font-mono font-bold flex items-center justify-center gap-2.5 shadow-[0_0_25px_rgba(0,240,255,0.4)]"
+                >
+                  <span>⬇️</span>
+                  <span>DOWNLOAD APP (base.apk Auto-Install)</span>
+                </button>
+
+                {/* 2. 1-Click Install as App (PWA) */}
+                <button
+                  type="button"
+                  onClick={handleNativePwaInstall}
+                  className="w-full btn-glass py-2.5 px-4 text-xs font-mono font-bold text-cyan-300 hover:text-white flex items-center justify-center gap-2 border-cyan-500/40"
+                >
+                  <span>📲</span>
+                  <span>Add to Home Screen (Instant 1-Click App)</span>
+                </button>
+              </div>
+
+              {/* Auto Install Instructions */}
+              <div className="p-3.5 rounded-xl bg-[#030712] border border-[#1E3264] space-y-2 text-xs font-sans">
+                <div className="font-bold font-mono text-slate-200 flex items-center gap-1.5">
+                  <span>ℹ️</span> 3 Simple Steps to Auto-Install base.apk:
+                </div>
+                <ol className="list-decimal list-inside space-y-1 text-slate-400 text-[11px] leading-relaxed">
+                  <li>Click <strong className="text-cyan-300">Download App (base.apk)</strong> above.</li>
+                  <li>When download completes, tap the notification or open <strong className="text-slate-200">base.apk</strong> from your Downloads folder.</li>
+                  <li>If prompted, tap <strong className="text-cyan-400">Settings → Allow from this source</strong>, then tap <strong className="text-emerald-400">Install</strong>.</li>
+                </ol>
+              </div>
+
+              {/* Bottom Footer: Auto-Prompt Option & Dismiss */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-[#1E3264]">
+                <label className="flex items-center gap-2 cursor-pointer text-[11px] font-mono text-slate-400 hover:text-slate-200 select-none">
+                  <input
+                    type="checkbox"
+                    checked={autoPromptApk}
+                    onChange={(e) => handleToggleAutoPromptApk(e.target.checked)}
+                    className="rounded border-[#1E3264] text-cyan-500 focus:ring-cyan-400 bg-[#0B132B] w-4 h-4 cursor-pointer"
+                  />
+                  <span>Ask to install app whenever opened</span>
+                </label>
+
+                <button
+                  type="button"
+                  onClick={() => setShowAppInstallModal(false)}
+                  className="btn-glass py-1.5 px-4 text-xs font-mono text-slate-300 hover:text-white w-full sm:w-auto"
+                >
+                  Continue in Browser →
                 </button>
               </div>
 
@@ -3239,6 +3457,18 @@
                     cloudStatus === 'connecting' ? 'Connecting...' :
                     cloudStatus === 'error' ? 'Cloud Error' : '🔥 Cloud Sync'
                   }</span>
+                </button>
+
+                {/* Install App / base.apk Prompt Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowAppInstallModal(true)}
+                  className="px-3 py-1.5 rounded-xl border border-cyan-500/50 bg-[#0B132B] hover:bg-[#162550] text-cyan-300 hover:text-white text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-md hover:border-cyan-400 group"
+                  title="Install AeroFatigue Mobile App or Download base.apk"
+                >
+                  <span className="text-sm">📱</span>
+                  <span className="hidden sm:inline">Install App</span>
+                  <span className="text-[9px] bg-cyan-950 px-1.5 py-0.5 rounded border border-cyan-500/30 text-cyan-300 font-mono hidden md:inline">base.apk</span>
                 </button>
 
                 {/* Firebase Auth User Pill / Sign In Button */}
@@ -3347,6 +3577,41 @@
                           </button>
                         </div>
 
+                        {/* 3. Mobile App (base.apk) & Install */}
+                        <div className="p-2 rounded-lg bg-[#0F1C3F]/60 border border-[#1E3264] hover:border-cyan-500/50 transition-colors">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-base">📱</span>
+                            <span className="font-bold text-slate-100">Mobile App (base.apk)</span>
+                          </div>
+                          <p className="text-[11px] text-slate-400 font-sans mb-2 leading-tight">
+                            Download the standalone Android APK or install directly on your device home screen.
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setShowReferMenu(false);
+                                handleDownloadBaseApk();
+                              }}
+                              className="btn-cyber text-[10px] py-1 px-2 font-bold flex-1 flex items-center justify-center gap-1"
+                              title="Download base.apk for Android"
+                            >
+                              <span>⬇</span>
+                              <span>base.apk</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setShowReferMenu(false);
+                                setShowAppInstallModal(true);
+                              }}
+                              className="btn-glass text-[10px] py-1 px-2 text-cyan-300 hover:text-white font-bold flex-1"
+                            >
+                              ⚙️ Install Guide
+                            </button>
+                          </div>
+                        </div>
+
                       </div>
                     </div>
                   )}
@@ -3374,7 +3639,7 @@
                 </p>
               </div>
 
-              <div className="pt-2 flex justify-center">
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <button
                   onClick={handleEnterAeroFatigue}
                   className="btn-cyber text-base sm:text-lg py-4 px-8 rounded-2xl shadow-[0_0_40px_rgba(0,240,255,0.5)] pulse-glow group"
@@ -3382,6 +3647,15 @@
                   <span>🚀</span>
                   <span className="font-black font-mono tracking-wider">ENTER AEROFATIGUE</span>
                   <span className="group-hover:translate-x-1.5 transition-transform">→</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowAppInstallModal(true)}
+                  className="btn-glass py-4 px-6 rounded-2xl text-xs sm:text-sm font-mono font-bold text-cyan-300 hover:text-white border-cyan-500/50 flex items-center justify-center gap-2 hover:border-cyan-400 shadow-lg"
+                  title="Install Mobile App or Download base.apk"
+                >
+                  <span>📱</span>
+                  <span>INSTALL APP (base.apk)</span>
                 </button>
               </div>
             </main>
@@ -3394,6 +3668,7 @@
             {renderCloudModal()}
             {renderAuthModal()}
             {renderUserManualModal()}
+            {renderAppInstallModal()}
           </div>
         );
       }
@@ -3485,6 +3760,18 @@
                     cloudStatus === 'error' ? 'Cloud Error' : '🔥 Cloud Sync'
                   }</span>
                   <span className="sm:hidden">🔥</span>
+                </button>
+
+                {/* Install App / base.apk Prompt Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowAppInstallModal(true)}
+                  className="px-3 py-1.5 rounded-xl border border-cyan-500/50 bg-[#0B132B] hover:bg-[#162550] text-cyan-300 hover:text-white text-xs font-mono font-bold flex items-center gap-1.5 transition-all shadow-md hover:border-cyan-400 group"
+                  title="Install AeroFatigue Mobile App or Download base.apk"
+                >
+                  <span className="text-sm">📱</span>
+                  <span className="hidden sm:inline">Install App</span>
+                  <span className="text-[9px] bg-cyan-950 px-1.5 py-0.5 rounded border border-cyan-500/30 text-cyan-300 font-mono hidden md:inline">base.apk</span>
                 </button>
 
                 {/* Firebase Auth User Pill / Sign In Button */}
@@ -3592,6 +3879,42 @@
                             <span>Download Work Intensity PDF (3P)</span>
                           </button>
                         </div>
+
+                        {/* 3. Mobile App (base.apk) & Install */}
+                        <div className="p-2 rounded-lg bg-[#0F1C3F]/60 border border-[#1E3264] hover:border-cyan-500/50 transition-colors">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-base">📱</span>
+                            <span className="font-bold text-slate-100">Mobile App (base.apk)</span>
+                          </div>
+                          <p className="text-[11px] text-slate-400 font-sans mb-2 leading-tight">
+                            Download the standalone Android APK or install directly on your device home screen.
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setShowReferMenu(false);
+                                handleDownloadBaseApk();
+                              }}
+                              className="btn-cyber text-[10px] py-1 px-2 font-bold flex-1 flex items-center justify-center gap-1"
+                              title="Download base.apk for Android"
+                            >
+                              <span>⬇</span>
+                              <span>base.apk</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setShowReferMenu(false);
+                                setShowAppInstallModal(true);
+                              }}
+                              className="btn-glass text-[10px] py-1 px-2 text-cyan-300 hover:text-white font-bold flex-1"
+                            >
+                              ⚙️ Install Guide
+                            </button>
+                          </div>
+                        </div>
+
                       </div>
                     </div>
                   )}
@@ -3756,6 +4079,14 @@
                         onChange={handleImportAllDataJSON}
                       />
                     </label>
+                    <button
+                      onClick={() => setShowAppInstallModal(true)}
+                      className="px-3.5 py-2 rounded-xl text-xs font-mono font-bold text-cyan-300 hover:bg-cyan-950/60 border border-cyan-500/40 flex items-center gap-1.5 transition-all"
+                      title="Open App Install & base.apk Prompt"
+                    >
+                      <span>📱</span>
+                      <span>App (base.apk)</span>
+                    </button>
                     <button
                       onClick={handleOpenChangePasswordModal}
                       className="px-3.5 py-2 rounded-xl text-xs font-mono font-bold text-purple-300 hover:bg-purple-950/60 border border-purple-500/40"
@@ -4502,6 +4833,15 @@
                     >
                       <span>📄</span>
                       <span>Workload Guide</span>
+                    </button>
+
+                    <button
+                      onClick={() => setShowAppInstallModal(true)}
+                      className="px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold text-cyan-300 hover:bg-cyan-500/20 transition-all border border-cyan-500/40 flex items-center gap-1.5"
+                      title="Install Mobile App or Download base.apk"
+                    >
+                      <span>📱</span>
+                      <span>App (base.apk)</span>
                     </button>
 
                     <button
@@ -5696,6 +6036,7 @@
             {renderCloudModal()}
             {renderAuthModal()}
             {renderUserManualModal()}
+            {renderAppInstallModal()}
 
           </main>
 
