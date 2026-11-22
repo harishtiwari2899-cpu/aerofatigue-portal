@@ -1661,6 +1661,70 @@
         }
       };
 
+      // --- EXPORT & IMPORT LOCAL APP DATA (JSON BACKUP) ---
+      const handleExportAllDataJSON = () => {
+        try {
+          const exportPayload = {
+            version: '5.0',
+            exportedAt: new Date().toISOString(),
+            personnelList,
+            fatigueLogs,
+            adminCreds
+          };
+          const jsonStr = JSON.stringify(exportPayload, null, 2);
+          const blob = new Blob([jsonStr], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          const dateStr = getSystemCurrentDate();
+          a.href = url;
+          a.download = `AeroFatigue_Data_Backup_${dateStr}.json`;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }, 400);
+          triggerNotice(`📥 Exported backup with ${personnelList.length} crew and ${fatigueLogs.length} logs!`, "success");
+        } catch (err) {
+          console.error("Export error:", err);
+          triggerNotice("Failed to export data: " + err.message, "danger");
+        }
+      };
+
+      const handleImportAllDataJSON = (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          try {
+            const parsed = JSON.parse(event.target.result);
+            if (!parsed || !Array.isArray(parsed.personnelList)) {
+              throw new Error("Invalid backup file format. Expected personnelList array.");
+            }
+            setPersonnelList(parsed.personnelList);
+            if (Array.isArray(parsed.fatigueLogs)) {
+              setFatigueLogs(parsed.fatigueLogs);
+            }
+            if (parsed.adminCreds && parsed.adminCreds.id) {
+              setAdminCreds(parsed.adminCreds);
+            }
+            localStorage.setItem("aerofatigue_personnel_list_v5", JSON.stringify(parsed.personnelList));
+            if (Array.isArray(parsed.fatigueLogs)) {
+              localStorage.setItem("aerofatigue_history_logs_v5", JSON.stringify(parsed.fatigueLogs));
+            }
+            triggerNotice(`✅ Successfully imported ${parsed.personnelList.length} personnel and ${(parsed.fatigueLogs || []).length} logs!`, "success");
+            // If connected to Firestore, prompt/auto-seed
+            if (firestoreDb && cloudStatus === 'connected') {
+              handleSeedDataToCloud();
+            }
+          } catch (err) {
+            console.error("Import error:", err);
+            triggerNotice("Import failed: " + err.message, "danger");
+          }
+        };
+        reader.readAsText(file);
+      };
+
       // --- FIREBASE AUTHENTICATION HANDLERS ---
       const handleGoogleSignIn = async () => {
         if (!firebase.apps || firebase.apps.length === 0 || !cloudConfig || !cloudConfig.apiKey) {
@@ -2195,6 +2259,63 @@
                     <div className="text-slate-400">Admin Sync</div>
                     <div className="text-sm font-bold text-purple-300">{adminCreds.id}</div>
                   </div>
+                </div>
+              </div>
+
+              {/* Offline / In-Memory Notice if Not Connected */}
+              {cloudStatus !== 'connected' && (
+                <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/50 space-y-2 text-xs font-sans animate-fadeIn">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-amber-300 font-mono flex items-center gap-1.5">
+                      <span>⚠️</span> Local Browser Storage (Not Synced to Cloud Server)
+                    </span>
+                    <span className="text-[10px] bg-amber-900/60 text-amber-200 border border-amber-500/40 px-2 py-0.5 rounded-full font-mono font-bold">
+                      Local Only
+                    </span>
+                  </div>
+                  <p className="text-slate-300 text-[11px] leading-relaxed">
+                    Because Firebase is not yet connected with database keys, all personnel profiles and logs are saved <strong>only in this browser's temporary storage</strong>. People visiting via other computers or phones cannot see this data yet.
+                  </p>
+                  <p className="text-cyan-300 text-[11px]">
+                    👉 To save permanently on the cloud server, paste your Firebase snippet below or export a JSON backup file!
+                  </p>
+                </div>
+              )}
+
+              {/* Data Backup & Restore (JSON) */}
+              <div className="p-4 rounded-xl bg-[#030712] border border-[#1E3264] space-y-3 font-sans text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold font-mono text-cyan-300 flex items-center gap-1.5">
+                    <span>💾</span> JSON Data Backup &amp; Transfer
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-mono">Never Lose Your Records</span>
+                </div>
+                <p className="text-slate-300 text-[11px] leading-relaxed">
+                  Download a full backup of all <strong className="text-cyan-300">{personnelList.length} crew profiles</strong> and <strong className="text-amber-300">{fatigueLogs.length} fatigue logs</strong> to your computer. You can restore it on any device or share it anytime.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
+                  <button
+                    type="button"
+                    onClick={handleExportAllDataJSON}
+                    className="btn-cyber flex-1 py-2 text-xs font-mono font-bold flex items-center justify-center gap-1.5 shadow-md"
+                    title="Export complete database backup as a JSON file"
+                  >
+                    <span>📥</span>
+                    <span>Download JSON Backup</span>
+                  </button>
+                  <label
+                    className="btn-glass flex-1 py-2 text-xs font-mono font-bold text-cyan-300 hover:text-white flex items-center justify-center gap-1.5 cursor-pointer border-cyan-500/40"
+                    title="Load an existing JSON backup into this browser"
+                  >
+                    <span>📤</span>
+                    <span>Import JSON Backup</span>
+                    <input
+                      type="file"
+                      accept=".json,application/json"
+                      className="hidden"
+                      onChange={handleImportAllDataJSON}
+                    />
+                  </label>
                 </div>
               </div>
 
@@ -3614,6 +3735,27 @@
                     >
                       📋 Master Duty &amp; Fatigue Logs ({fatigueLogs.length})
                     </button>
+                    <button
+                      onClick={handleExportAllDataJSON}
+                      className="px-3.5 py-2 rounded-xl text-xs font-mono font-bold text-emerald-300 hover:bg-emerald-950/60 border border-emerald-500/40 flex items-center gap-1.5 transition-all"
+                      title="Download complete JSON backup containing all personnel, logs, and settings"
+                    >
+                      <span>📥</span>
+                      <span>Export Backup (JSON)</span>
+                    </button>
+                    <label
+                      className="px-3.5 py-2 rounded-xl text-xs font-mono font-bold text-cyan-300 hover:bg-cyan-950/60 border border-cyan-500/40 cursor-pointer flex items-center gap-1.5 transition-all"
+                      title="Restore all personnel and logs from a JSON backup file"
+                    >
+                      <span>📤</span>
+                      <span>Import Backup</span>
+                      <input
+                        type="file"
+                        accept=".json,application/json"
+                        className="hidden"
+                        onChange={handleImportAllDataJSON}
+                      />
+                    </label>
                     <button
                       onClick={handleOpenChangePasswordModal}
                       className="px-3.5 py-2 rounded-xl text-xs font-mono font-bold text-purple-300 hover:bg-purple-950/60 border border-purple-500/40"
